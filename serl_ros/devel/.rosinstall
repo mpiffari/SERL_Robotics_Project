@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /SERL_Project/serl_ros/devel/setup.sh
