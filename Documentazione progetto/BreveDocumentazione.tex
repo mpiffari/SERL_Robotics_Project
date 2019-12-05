@@ -1,0 +1,134 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LaTeX book template                           %%
+%% Author:  Amber Jain (http://amberj.devio.us/) %%
+%% License: ISC license                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,11pt]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Source: http://en.wikibooks.org/wiki/LaTeX/Hyperlinks %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{lscape}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{listingsutf8}
+
+\usepackage{subfig}
+
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage{epstopdf}
+
+\usepackage[ruled]{algorithm2e}
+\lstset{% general command to set parameter(s)
+	basicstyle=\small, % print whole listing small
+	numbers=left,
+	keywordstyle=\color{black}\bfseries,
+	% underlined bold black keywords
+	identifierstyle=, % nothing happens
+	stringstyle=\ttfamily} % typewriter type for strings
+
+\lstset{language=Java} 
+\captionsetup{tableposition=top,figureposition=bottom,font=small}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 'dedication' environment: To add a dedication paragraph at the start of book %
+% Source: http://www.tug.org/pipermail/texhax/2010-June/015184.html            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{dedication}
+{
+   \cleardoublepage
+   \thispagestyle{empty}
+   \vspace*{\stretch{1}}
+   \hfill\begin{minipage}[t]{0.66\textwidth}
+   \raggedright
+}
+{
+   \end{minipage}
+   \vspace*{\stretch{3}}
+   \clearpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter quote at the start of chapter        %
+% Source: http://tex.stackexchange.com/a/53380 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% First page of book which contains 'stuff' like: %
+%  - Book title, subtitle                         %
+%  - Book author name                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Book's title and subtitle
+\title{
+	\includegraphics[width=0.7\textwidth]{Immagini/UniBg.png}
+	\\ \Huge \textbf{Navigazione basata su inseguimento di frecce} \\ \huge \textit{\textbf{Relazione di progetto}} \\ \bigskip \huge Progetto del corso Robotica (principi e progetto)\\ Università degli Studi di Bergamo \\ \huge A.A. 2019/2020}
+% Author
+\author{\textsc{Calegari Andrea - xxxxxxx}
+		\\ \textsc{Paganessi Andrea - 1040658}
+		\\ \textsc{Piffari Michele - xxxxxxx}}
+
+\begin{document}
+	
+	\frontmatter
+	\maketitle
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Auto-generated table of contents, list of figures and list of tables %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\tableofcontents
+	\listoffigures
+	
+	
+	
+	\mainmatter
+	\chapter{Stato dell'arte}
+	\input{Capitoli/StatoArte.tex}
+	\chapter{Camera}
+	\input{Capitoli/Camera.tex}
+	\chapter{Gestione delle maschere}
+	\input{Capitoli/Maschere.tex}
+	
+	\begin{thebibliography}{9}
+		\bibitem{bib1}
+		\emph{Descrizione della camera}
+		\url{https://en.ids-imaging.com/store/ui-1221le-rev-2.html}
+		
+		\bibitem{bib2}
+		\emph{Manuale della camera}
+		\url{https://en.ids-imaging.com/IDS/datasheet_pdf.php?sku=AB02422}
+		
+		\bibitem{bib3}
+		\emph{Manuale della lente}
+		\url{https://www.lensation.de/product/BM2420/}
+		
+		\bibitem{bib4}
+		\emph{Ueye cam e ROS}
+		\url{http://wiki.ros.org/ueye}
+		
+		\bibitem{bib5}
+		\emph{HSV vs RGB}
+		\url{https://medium.com/neurosapiens/segmentation-and-classification-with-hsv-8f2406c62b39}
+		
+		\bibitem{bib6}
+		\emph{HSV vs RGB}
+		\url{https://handmap.github.io/hsv-vs-rgb/}
+		
+		\end{thebibliography}
+
+\end{document}
