@@ -1,0 +1,33 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~image_width" : \b [int] Width of camera's area of interest (prior to subsampling, binning, or sensor scaling) min: 16, default: 640, max: 4912
+- \b "~image_height" : \b [int] Height of camera's area of interest (prior to subsampling, binning, or sensor scaling) min: 4, default: 480, max: 3684
+- \b "~image_left" : \b [int] Left index for camera's area of interest (-1: center) min: -1, default: -1, max: 2544
+- \b "~image_top" : \b [int] Top index for camera's area of interest (-1: center) min: -1, default: -1, max: 1916
+- \b "~color_mode" : \b [str] Output image color mode min: , default: mono8, max: 
+- \b "~subsampling" : \b [int] Output image subsampling ratio min: -2147483648, default: 1, max: 2147483647
+- \b "~binning" : \b [int] Output image binning ratio min: -2147483648, default: 1, max: 2147483647
+- \b "~sensor_scaling" : \b [double] Output image scaling ratio (Internal Image Scaling) min: -std::numeric_limits<double>::infinity(), default: 1.0, max: std::numeric_limits<double>::infinity()
+- \b "~auto_gain" : \b [bool] Auto gain (overruled by auto framerate) min: False, default: False, max: True
+- \b "~master_gain" : \b [int] Master gain percentage min: 0, default: 0, max: 100
+- \b "~red_gain" : \b [int] Gain percentage for red channel min: 0, default: 0, max: 100
+- \b "~green_gain" : \b [int] Gain percentage for green channel min: 0, default: 0, max: 100
+- \b "~blue_gain" : \b [int] Gain percentage for blue channel min: 0, default: 0, max: 100
+- \b "~gain_boost" : \b [bool] Analog gain boost min: False, default: False, max: True
+- \b "~auto_exposure" : \b [bool] Auto exposure (a.k.a. auto shutter) min: False, default: False, max: True
+- \b "~exposure" : \b [double] Exposure value (ms) min: 0.0, default: 33.0, max: 300.0
+- \b "~auto_white_balance" : \b [bool] Auto white balance min: False, default: False, max: True
+- \b "~white_balance_red_offset" : \b [int] Red level offset for white balance min: -50, default: 0, max: 50
+- \b "~white_balance_blue_offset" : \b [int] Blue level offset for white balance min: -50, default: 0, max: 50
+- \b "~flash_delay" : \b [int] Flash output delay (us) [not applicable in external trigger mode] min: -1000000, default: 0, max: 1000000
+- \b "~flash_duration" : \b [int] Flash output duration (us) (0: set to exposure duration) [not applicable in external trigger mode] min: 0, default: 1000, max: 1000000
+- \b "~ext_trigger_mode" : \b [bool] Toggle between external trigger mode and free-run mode min: False, default: False, max: True
+- \b "~auto_frame_rate" : \b [bool] Auto frame rate (requires auto exposure, supercedes auto gain) [not applicable in external trigger mode] min: False, default: False, max: True
+- \b "~frame_rate" : \b [double] Frame process rate (Hz) [not applicable in external trigger mode] min: 0.01, default: 10.0, max: 200.0
+- \b "~output_rate" : \b [double] Frame publish rate (Hz) (0: publish all processed frames) [not applicable in external trigger mode] min: 0.0, default: 0.0, max: 200.0
+- \b "~pixel_clock" : \b [int] Pixel clock (MHz) min: 1, default: 25, max: 500
+- \b "~flip_upd" : \b [bool] Mirror Upside Down min: False, default: False, max: True
+- \b "~flip_lr" : \b [bool] Mirror Left Right min: False, default: False, max: True
+
