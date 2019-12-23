@@ -62,9 +62,12 @@
 #include "/home/serl/SERL_Project/Eigen_library/Eigen/Dense"
 
 
-#define threshold_triangolo_rettangolo 	50
-#define threshold_area_rettangolo 		50
-#define threshold_area_triangolo 		5
+// Parameters used to filter out noisily points in the original image
+// [pixel^2] Lower threshold useful to reduce the presence of undesired figure
+#define lower_area_rect         50 
+#define lower_area_triang       5
+// [pixel] Lower threshold useful to recognize square figure near rectangular one
+#define lower_dst_rect_triang   50
 
 using namespace Eigen;
 using namespace std;

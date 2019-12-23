@@ -61,23 +61,30 @@ IplImage* img3;
 #endif
 
 
+using namespace Eigen;
+using namespace std;
+using namespace cv;
+
+bool computationInProgress = false;
+Mat localImage;
+
+// TODO: put in a global declaration file
+const char* nameMainImageWindow = "Field Of View";
+const char* erosionImageWindow = "Erosion demo";
+const char* dilatationImageWindow = "Dilatation demo";
+bool showColorsThresholdTrackbar = false; // Flag to activate trackabar window for tuning of HSV threshold
+bool showErosionTrackbar = false; // Flag to activate trackbar windowd for erosion tuning
+bool showDilatationTrackbar = false; // Flag to activate trackbar windowd for dilatation tuning
+
+// Image dimensions
+int image_height;
+int image_width;
 
 //int flag = false;
 int start = 0;
-int minT= 0, maxT = 255; // for black and white threshold
-// Black mask
-int MinH_b=0;
-int MaxH_b=255;
-int MinS_b=0;
-int MaxS_b=193;
-int MinV_b=0;
-int MaxV_b=141;
-// Red mask
-
-float alpha_cam;	//Angolo asse telecamera rispetto alla verticale in gradi
 float r;    	//Raggio marker
 
-// Red mask
+// Red mask CSV threshold
 int MinH_R=0;
 int MaxH_R=10;
 int MinS_R=70;
@@ -85,7 +92,7 @@ int MaxS_R=255;
 int MinV_R=172;
 int MaxV_R=255;
 
-// Blue mask
+// Blue mask CSV threshold
 int MinH_B=100;
 int MaxH_B=180;
 int MinS_B=0;
@@ -96,32 +103,35 @@ int MaxV_B=200;
 int PARAM;
 
 
+// Erosion and dilation parameters definition
 int erosion_elem = 0;
-int erosion_size = 1;
 int dilation_elem = 0;
-int dilation_size = 3;
+int erosion_size = 1; // Setting of erosion type [MORPH_RECT, MORPH_CROSS, MORPH_ELLIPSE]
+int dilation_size = 3; // Setting of dilation type [MORPH_RECT, MORPH_CROSS, MORPH_ELLIPSE]
+// Erosion and dilation tuning parameters
 int const max_elem = 2;
 int const max_kernel_size = 21;
 void Erosion(Mat in, Mat &out);
 void Dilation(Mat in, Mat &out);
 
-
-float theta = asin(2/3.5); //inclinazione dell'asse della camera rispetto al palo
+// Camera tilt 
+float cam_inclination = asin(2/3.5); 
+// Intrinsic parameters of the camera (focal and center position)
 float f_x = 463.713374;
 float f_y = 464.444408;
 float c_x = 316.855629;
 float c_y = 255.988008;
-float h_cam = 0.83; //altezza della camera in metri
-float scale;
+float h_cam = 0.310; // Height of the camera from the ground expressed in [m]
+float scale; // Scale factor used to detect deepness of the point
   
-MatrixXf R_traslazione(4,4);
-MatrixXf R_rot_theta(4,4);
-MatrixXf R_rot_camera(4,4);
-VectorXf U_cam(2); //cooridinate del punto dell'immagine nel sistema di rifrerimento dell'immagine
-VectorXf X_camera_normalized(3); //coordianate del punto nel frame della camera normalizzato
-VectorXf X_camera(3); //coord del punto nel frame della camera
-VectorXf X_camera_augmented(4);
-VectorXf X_World(4);
+MatrixXf R_traslation(4,4); // Traslation of point acquired from ground position to camera height (see documentation)
+MatrixXf R_rot_theta(4,4); // Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
+MatrixXf R_rot_camera(4,4); // Rotation from the frame of the camera to the base ground (see documentation)
+VectorXf U_cam(2); // Coordinates of the point in the image frame
+VectorXf X_camera_normalized(3); // Coordinates of the point in the normalized frame
+VectorXf X_camera(3); // Coordinates of the point in the camera frame
+VectorXf X_camera_augmented(4); // Useful for passage from 2D to 3D by adding "fictitious" third coordinate
+VectorXf X_World(4); 
 
 //settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
 //trovo le arrows in diagonale
@@ -135,13 +145,13 @@ ArrowFinder::~ArrowFinder() {
 
 list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 
-	R_traslazione <<1,0,0,0,
+	R_traslation <<1,0,0,0,
 				    0,1,0,0,
 				    0,0,1,-h_cam,
 				    0,0,0,1;
  	R_rot_theta   <<1,0,0,0,
-				    0,cos(theta),-sin(theta),0,
-				 	0,sin(theta),cos(theta),0,
+				    0,cos(cam_inclination),-sin(cam_inclination),0,
+				 	0,sin(cam_inclination),cos(cam_inclination),0,
 				 	0,0,0,1;	
  	R_rot_camera   <<1,0,0,0,
 				    0,cos(M_PI/2),-sin(M_PI/2),0,
@@ -338,7 +348,7 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 
 
 		//if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
-		if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>threshold_area_rettangolo) {
+		if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect) {
 		 
 				cvDrawContours(img3, result, cvScalar(0,0,0), cvScalar(0,0,0), 100, 2);
 			//cout<<"PARAM: "<<cvContourPerimeter(contour)*(((float)PARAM)/1000)<<endl;
@@ -430,7 +440,7 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 
 
 		//if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
-		if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>threshold_area_triangolo) {
+		if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang) {
 			cvDrawContours(img3, result, cvScalar(255,255,0), cvScalar(255,255,0), 100, 2);
 
 			//flag=true;
@@ -492,7 +502,7 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 		}
 
 		//filtro le freccie in base alla distanza tra il centro del triangolo e il centro del rettangolo
-		if(min_value < threshold_triangolo_rettangolo){
+		if(min_value < lower_dst_rect_triang){
 			freccia_divisa f;
 			f.centro_triangolo = (*i).first;
 			f.centro_rettangolo = min.first;
@@ -575,7 +585,7 @@ VectorXf ArrowFinder::worldCoordinates(const freccia* arrow){
 
 	X_camera = X_camera_normalized * scale;
 	X_camera_augmented << X_camera , 1;
-	X_World = (R_rot_camera * R_rot_theta * R_traslazione).inverse() * X_camera_augmented;
+	X_World = (R_rot_camera * R_rot_theta * R_traslation).inverse() * X_camera_augmented;
 	return X_World;
 }
 
@@ -583,7 +593,8 @@ VectorXf ArrowFinder::worldCoordinates(const freccia* arrow){
 /*
 void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
  	
-
+ 	image_width = image_width;
+	image_heigth = image_height;
 
 	//filtro sulla freccia di area maggiore
 	if(freccie.size() != 0) {
@@ -624,7 +635,7 @@ void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 		scale = h_cam/(0.82*X_camera_normalized[1] + 0.57);
 		X_camera = X_camera_normalized * scale;
 		X_camera_augmented << X_camera , 1;
-		X_World = (R_rot_camera * R_rot_theta * R_traslazione).inverse() * X_camera_augmented;
+		X_World = (R_rot_camera * R_rot_theta * R_traslation).inverse() * X_camera_augmented;
 
 		cout<<"Coordinate World: \n*****\n"<<X_World<<"\n*****\n";
 
