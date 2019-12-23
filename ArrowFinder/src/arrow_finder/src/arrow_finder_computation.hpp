@@ -2,7 +2,7 @@
  *
  * Arrow finder computation
  *
- * Copyright (c) 2019
+ * Copyright (c) 2018
  * All rights reserved.
  *
  * Davide Brugali, Università degli Studi di Bergamo
@@ -46,13 +46,29 @@
  * License LGPL and BSD license along with this program.
  *
  *******************************************************************************/
-
-#ifndef STAR_ARROWFINDER
-#define STAR_ARROWFINDER
+#ifndef ARROWFINDER
+#define ARROWFINDER
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
+#include "/home/serl/ArrowFinder/src/libraries/Eigen_library/Eigen/Dense"
+#include <unistd.h>
+#include <iostream>
+#include <time.h>
+#include <math.h>
+#include <list>
+#include <iterator>
+#include "/home/serl/SERL_Project/Eigen_library/Eigen/Dense"
+
+
+#define threshold_triangolo_rettangolo 	50
+#define threshold_area_rettangolo 		50
+#define threshold_area_triangolo 		5
+
+using namespace Eigen;
+using namespace std;
+using namespace cv;
 
 // TODO: il prof vuole aggiungere nell'interfaccia due metodi:
 // - setImage
@@ -62,17 +78,53 @@
 // Si può realizzare usando un flag booleano per abilitato quando inizio la computazione
 // e disabilitato quando finisce; il tutto deve essere regolato da un accesso concorrente.
 
+struct freccia{
+	CvPoint center;  	//of the arrow
+	float orientation;	//in degrees
+	float area; 
+};
+
+struct freccia_divisa{
+	CvPoint centro_triangolo;
+	CvPoint centro_rettangolo;
+	float area; 
+};
 
 class ArrowFinder {
+	
   public:
+  	
+  	
+
     std::vector<cv::Point2f> output;	//Coordinate dei marcatori
     ArrowFinder();
     ~ArrowFinder();
 
-    bool setup(const std::string &filename);
+   // bool setup(const std::string &filename);
+    /*
+    	return: true se abbimao trovato un immagine
+    */
     void setImage(cv::Mat original_image, int image_height, int image_width);
-    void getImage(); // Computation parte
-  private:
+
+	/*
+	*	@return: a list containing all the arrows found into original_image
+	*/
+    list<freccia> findArrows(cv::Mat image);
+
+    /*
+    * @return: the biggest arrow in the arrow_list
+    */
+    const freccia* getBiggestArrow( list<freccia> arrow_list);
+
+    //convert from image coordiantes to world coordinates
+    VectorXf worldCoordinates(const freccia* arrow);
+
+
+    //output come messaggio ros pubblicato 
+    //indipendenza dalle librerie di ROS
+
+ 
+
 };
 
 #endif
