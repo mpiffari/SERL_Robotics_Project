@@ -11,7 +11,9 @@
 \contentsline {section}{\numberline {3.3}Maschere}{7}{section.3.3}
 \contentsline {section}{\numberline {3.4}Erosione e dilatazione}{7}{section.3.4}
 \contentsline {chapter}{\numberline {4}Identificazione delle forme}{9}{chapter.4}
-\contentsline {chapter}{\numberline {5}Dalle camera coordinates alle world coordinates}{11}{chapter.5}
-\contentsline {section}{\numberline {5.1}Scelta della camera}{11}{section.5.1}
-\contentsline {section}{\numberline {5.2}Vericale o orizzontale?}{11}{section.5.2}
-\contentsline {section}{\numberline {5.3}Come ottenere le immagini dalla camera?}{11}{section.5.3}
+\contentsline {chapter}{\numberline {5}Dalle pixel coordinates alle world coordinates}{11}{chapter.5}
+\contentsline {section}{\numberline {5.1}Definizione del problema}{11}{section.5.1}
+\contentsline {section}{\numberline {5.2}Da wolrd coordinates to camera coordinates}{12}{section.5.2}
+\contentsline {section}{\numberline {5.3}Da camera coordinates a film coordinates}{13}{section.5.3}
+\contentsline {section}{\numberline {5.4}Da film coordinates a pixel coordinates}{13}{section.5.4}
+\contentsline {section}{\numberline {5.5}Problema al rovescio}{14}{section.5.5}
