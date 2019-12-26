@@ -159,50 +159,43 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 				 	0,0,0,1;	
 
   
-
-    
-	//output.clear();
-	list <freccia_divisa> freccie;
-	Mat hsv;
+	list <arrow> freccie;
+	Mat original_image_hsv;
 	Mat hsv_red, hsv_blue;
 	Mat img_masked_red, img_masked_blue, img_masked_red_blue;
-	Mat src = Mat::zeros(480, 640, CV_8U);
-	Mat erosion_dst = Mat::zeros(480, 640, CV_8U);
-	Mat dilation_dst = Mat::zeros(480, 640, CV_8U);
-	Mat sup_msk = Mat::zeros(480, 640, CV_8U); // all 0
-	Mat app = Mat::zeros(480, 640, CV_8U);
-	CvSeq* contour;  //hold the pointer to a contour
-	CvSeq* result;   //hold sequence of points of a contour
-	CvMemStorage *storage = cvCreateMemStorage(0); //storage area for all contours
+	Mat src = Mat::zeros(image_height, image_width, CV_8U);
+	Mat erosion_dst = Mat::zeros(image_height, image_width, CV_8U);
+	Mat dilation_dst = Mat::zeros(image_height, image_width, CV_8U);
+	Mat sup_msk = Mat::zeros(image_height, image_width, CV_8U); // all 0
+	Mat app = Mat::zeros(image_height, image_width, CV_8U);
+	CvSeq* contour;  // Hold the pointer to a contour
+	CvSeq* result;   // Hold sequence of points of a contour
+	CvMemStorage *storage = cvCreateMemStorage(0); // Storage area for all contours
 
 	IplImage* imgGrayScale;
 
 	list <pair<CvPoint,float>> centri_rettangoli;
 	list <pair<CvPoint,float>> centri_triangoli;
 
-	//slider parametro perimetro
-	namedWindow("Immagine acquisita");
-	//createTrackbar("threshold  arrow", "Immagine acquisita", &PARAM, 500);//luminosità
+	if(showColorsThresholdTrackbar) {
+		const char* RedThreshold = "HSV RED";
+		namedWindow(RedThreshold);
+		createTrackbar("MinH red", RedThreshold, &MinH_R, 255);
+		createTrackbar("MaxH red", RedThreshold, &MaxH_R, 255);
+		createTrackbar("MinS red", RedThreshold, &MinS_R, 255);
+		createTrackbar("MaxS red", RedThreshold, &MaxS_R, 255);
+		createTrackbar("MinV red", RedThreshold, &MinV_R, 255);
+		createTrackbar("MaxV red", RedThreshold, &MaxV_R, 255);
 
-	//Settaggio trackbar per impostazione colore.
-	/*const char* str_r = "HSV RED";
-	namedWindow(str_r);
-	createTrackbar("MinH red", str_r, &MinH_R, 255);
-	createTrackbar("MaxH red", str_r, &MaxH_R, 255);
-	createTrackbar("MinS red", str_r, &MinS_R, 255);
-	createTrackbar("MaxS red", str_r, &MaxS_R, 255);
-	createTrackbar("MinV red", str_r, &MinV_R, 255);
-	createTrackbar("MaxV red", str_r, &MaxV_R, 255);
-
-	const char* str_b = "HSV BLUE";
-	namedWindow(str_b);
-	createTrackbar("MinH blue", str_b, &MinH_B, 255);
-	createTrackbar("MaxH blue", str_b, &MaxH_B, 255);
-	createTrackbar("MinS blue", str_b, &MinS_B, 255);
-	createTrackbar("MaxS blue", str_b, &MaxS_B, 255);
-	createTrackbar("MinV blue", str_b, &MinV_B, 255);
-	createTrackbar("MaxV blue", str_b, &MaxV_B, 255);
-*/
+		const char* BlueThreshold = "HSV BLUE";
+		namedWindow(BlueThreshold);
+		createTrackbar("MinH blue", BlueThreshold, &MinH_B, 255);
+		createTrackbar("MaxH blue", BlueThreshold, &MaxH_B, 255);
+		createTrackbar("MinS blue", BlueThreshold, &MinS_B, 255);
+		createTrackbar("MaxS blue", BlueThreshold, &MaxS_B, 255);
+		createTrackbar("MinV blue", BlueThreshold, &MinV_B, 255);
+		createTrackbar("MaxV blue", BlueThreshold, &MaxV_B, 255);
+	}
 	//gaussian blur
 	//image.convertTo(image,-1,1,-PARAM);
 	GaussianBlur(image, image, Size(3,3), 0);
