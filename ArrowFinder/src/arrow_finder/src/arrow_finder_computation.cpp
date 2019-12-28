@@ -262,34 +262,15 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     cvClearMemStorage(tinyRedFilterStorage);
     cvReleaseMemStorage(&tinyRedFilterStorage);
 
-
-
-
-
-    //ERODE and DILATATE
+    //Erode and dilatate
 	src = masked_red_small_area;
-	//imshow("msk_red_2", masked_red_small_area);
 	Erosion(src, erosion_dst);
-	//imshow("msk_red_3", masked_red_small_area);
 	
 	sup_msk(Rect(0, 0, 640, 240)) = 255;
-	
-	//imshow("APP ZEROS", app);
-	//imshow("sup_msk", sup_msk);
-	//imshow("img masked red 4", masked_red_small_area);
 	masked_red_small_area.copyTo(app,sup_msk);
-	//imshow("APP", app);
 	bitwise_or(erosion_dst,app,erosion_dst);
- 	//imshow("EROSION MID", erosion_dst);
 	Dilation(erosion_dst, dilation_dst);
 	masked_red_small_area = dilation_dst;
-	/*_______________________________________________________________*/
-	//imshow("image masked",img_masked);
-	
-
-	//imshow(str_r,hsv_red);
-	//imshow(str_b,hsv_blue);
-	//imshow("IMAGE MASKED BY RED AND BLUE", original_image_hsv);
 
 	IplImage tmp1=img_masked_red_blue;
 	IplImage* output = &tmp1;
