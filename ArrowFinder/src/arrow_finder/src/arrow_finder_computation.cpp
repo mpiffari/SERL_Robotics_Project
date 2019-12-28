@@ -238,7 +238,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	IplImage tmp6=img_masked_red;
 	IplImage* img6 = &tmp6;
 	Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
-	maschera(Rect(0, 0, image_width, image_height)) = 255;
+	mask(Rect(0, 0, image_width, image_height)) = 255;
 	IplImage mask_ipl=mask;
 	IplImage* mask_ipl2 = &mask_ipl;
 
@@ -466,7 +466,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 			f.area = (*i).second + min.second;
 
 			freccie.push_back(f);
-			cvLine(output, f.centro_rettangolo, f.centro_triangolo, cvScalar(180,55,69),2);
+			cvLine(output, f.center_rectangle, f.center_triangle, cvScalar(180,55,69),2);
 		}
 	}
 
@@ -475,18 +475,18 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	float coefficiente_angolare, angolo_deg;
 	for (list<composed_arrow_info>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
 		arrow_info new_arrow;
-		new_arrow.center.x = ((*i).centro_rettangolo.x + (*i).centro_triangolo.x) / 2;
-		new_arrow.center.y = ((*i).centro_rettangolo.y + (*i).centro_triangolo.y) / 2;
+		new_arrow.center.x = ((*i).center_rectangle.x + (*i).center_triangle.x) / 2;
+		new_arrow.center.y = ((*i).center_rectangle.y + (*i).center_triangle.y) / 2;
 
-		coefficiente_angolare = -(float)((*i).centro_rettangolo.y-(*i).centro_triangolo.y)/(float)(((*i).centro_rettangolo.x-(*i).centro_triangolo.x)+0.0000001);
+		coefficiente_angolare = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
 			
 		if(coefficiente_angolare>0) {
 			angolo_deg = atan(coefficiente_angolare)*180/M_PI;
-			if(((*i).centro_rettangolo.y-(*i).centro_triangolo.y)<=0) 
+			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0) 
 				angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
 		} else {
 			angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
-			if(((*i).centro_rettangolo.y-(*i).centro_triangolo.y)<=0) 
+			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0) 
 				angolo_deg = atan(coefficiente_angolare)*180/M_PI;
 		}
 
@@ -537,8 +537,8 @@ VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
 	
 	// ==== ALGORITMO RICONOSIMENTO DISTANZA ====
 	X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
-	//ssommo pi/2 per mettere l'asse delle z uscente dalla camera se fosse "dritta", theta è linclinazione rispetto al palo
-	scale = abs(h_cam/(-sin(theta+M_PI/2)*X_camera_normalized[1] + cos(theta+M_PI/2)));
+	//ssommo pi/2 per mettere l'asse delle z uscente dalla camera se fosse "dritta", cam_inclination è l'inclinazione rispetto al palo
+	scale = abs(h_cam/(-sin(cam_inclination + M_PI/2)*X_camera_normalized[1] + cos(cam_inclination + M_PI/2)));
 
 	X_camera = X_camera_normalized * scale;
 	X_camera_augmented << X_camera , 1;

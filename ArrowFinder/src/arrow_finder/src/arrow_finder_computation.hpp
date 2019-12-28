@@ -52,7 +52,6 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
-#include "/home/serl/ArrowFinder/src/libraries/Eigen_library/Eigen/Dense"
 #include <unistd.h>
 #include <iostream>
 #include <time.h>

@@ -20,7 +20,7 @@
 
 ArrowFinder finder;
 
-int image_height, image_width;
+//int image_height, image_width;
 ros::CallbackQueue *callback_queue;
 ros::Subscriber info_sub;
 ros::Subscriber img_sub;
@@ -29,8 +29,8 @@ bool info_received = false;
 void infoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg) {
 	sensor_msgs::CameraInfo info_msg = *msg;
 	if(! info_received) {
-		image_height = info_msg.height;
-		image_width = info_msg.width;
+		//image_height = info_msg.height;
+		//image_width = info_msg.width;
 		info_received = true;
 	}
 }
@@ -38,8 +38,8 @@ void infoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg) {
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
 	sensor_msgs::Image img_msg = *msg;
   	try {
-		list<freccia> pippo = finder.findArrows(cv_bridge::toCvShare(msg, "bgr8")->image);
-		const freccia* oo = finder.getBiggestArrow(pippo);
+		list<arrow_info> pippo = finder.findArrows(cv_bridge::toCvShare(msg, "bgr8")->image);
+		const arrow_info* oo = finder.getBiggestArrow(pippo);
 		if(oo != nullptr){
 			VectorXf x(4);
 			x = finder.worldCoordinates(oo);
