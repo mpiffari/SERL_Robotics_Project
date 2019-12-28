@@ -210,49 +210,58 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	// "img_masked_red" and "img_masked_blue" will contain only the red and the blue part (with some tolerance) of the original image
 	image.copyTo(img_masked_red,hsv_red); // Copy the original_image to destination "img_masked_red", using as mask the matrix obtain from red InRange
 	image.copyTo(img_masked_blue,hsv_blue); // Copy the original_image to destination "img_masked_blue", using as mask the matrix obtain from blue InRange
-	bitwise_or(hsv_red, hsv_blue, original_image_hsv); // After this command we will get the reed and blue colour layer together
-	image.copyTo(img_masked_red_blue,original_image_hsv); // In "original_image_hsv" there will be red and blue parts matched together
-
-	
-	/*_______________________________________________________________*/
-	//namedWindow( "Erosion Demo", WINDOW_AUTOSIZE );
-	namedWindow( "Dilation Demo", WINDOW_AUTOSIZE );
-	//moveWindow( "Dilation Demo", src.cols, 0 );
-	//createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", "Erosion Demo", &erosion_elem, max_elem,Erosion);
-	//createTrackbar( "Kernel size:\n 2n +1", "Erosion Demo",&erosion_size, max_kernel_size,Erosion );
-	//createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", "Dilation Demo",&dilation_elem, max_elem,Dilation );
-	//createTrackbar( "Kernel size:\n 2n +1", "Dilation Demo",&dilation_size, max_kernel_size,Dilation );
-	
+	bitwise_or(hsv_red, hsv_blue, original_image_hsv); // After this command we will get the red and blue colour layer together
+	image.copyTo(img_masked_red_blue,original_image_hsv); // In "img_masked_red_blue" there will be red and blue parts, from image, matched together
 
 
-	//Filtro contorni rossi di area piccola
-	CvMemStorage *storage2 = cvCreateMemStorage(0);  
-	CvSeq* contour2;
+	// TODO: attivare if (da errore in compilazione su Erosion/Dilatation in createTrackbar)
+	/*if(showErosionTrackbar) {
+		namedWindow(erosionImageWindow, WINDOW_AUTOSIZE);
+		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", erosionImageWindow, &erosion_elem, max_elem,Erosion);
+		createTrackbar( "Kernel size:\n 2n +1", erosionImageWindow,&erosion_size, max_kernel_size,Erosion);
+	}
+	if(showDilatationTrackbar) {
+		namedWindow(dilatationImageWindow, WINDOW_AUTOSIZE);
+		moveWindow(dilatationImageWindow, src.cols, 0);
+		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", dilatationImageWindow,&dilation_elem, max_elem,Dilation);
+		createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size,Dilation);
+	}*/
+
+
+	// TODO: racchiudere in una funzione (red_hsv_dimension_filter() per esempio)
+
+	// Filter of tiny contour in image with red pixel
+    CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);  
+	CvSeq* tinyRedCountours;
+
+	// TODO: capire se è possibile evitare di continuare ad usare questa conversione da Mat a IplImage (https://stackoverflow.com/questions/5192578/opencv-iplimage)
 	IplImage tmp6=img_masked_red;
 	IplImage* img6 = &tmp6;
-	Mat maschera = Mat::zeros(480, 640, CV_8U); // all 0
-	maschera(Rect(0, 0, 640, 480)) = 255;
-	IplImage maschera_ipl=maschera;
-	IplImage* maschera_ipl2 = &maschera_ipl;
+	Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
+	maschera(Rect(0, 0, image_width, image_height)) = 255;
+	IplImage mask_ipl=mask;
+	IplImage* mask_ipl2 = &mask_ipl;
 
-    imgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1); 
+    imgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1);
+    // Conversione da scala HSV a scala di grigi dell'immagine
     cvCvtColor(img6,imgGrayScale,CV_BGR2GRAY);
-    cvFindContours(imgGrayScale, storage2, &contour2, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+    cvFindContours(imgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
     
-    while(contour2) {
-    	if(cvContourArea(contour2) < 3) {
-    		cvDrawContours(maschera_ipl2, contour2, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
+    while(tinyRedCountours) {
+    	if(cvContourArea(tinyRedCountours) < 3) {
+    		cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
     	}
-    	contour2 = contour2->h_next;
+    	tinyRedCountours = tinyRedCountours->h_next;
     }
     
 	Mat masked_red_small_area;
-	img_masked_red.copyTo(masked_red_small_area,maschera);
+	img_masked_red.copyTo(masked_red_small_area,mask);
 
     cvReleaseImage(&imgGrayScale);
-    free(contour2);
-    cvClearMemStorage(storage2);
-    cvReleaseMemStorage(&storage2);
+    free(tinyRedCountours);
+    cvClearMemStorage(tinyRedFilterStorage);
+    cvReleaseMemStorage(&tinyRedFilterStorage);
+
 
 
 
