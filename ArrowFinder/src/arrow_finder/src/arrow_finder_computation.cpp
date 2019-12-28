@@ -266,7 +266,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	src = masked_red_small_area;
 	Erosion(src, erosion_dst);
 	
-	sup_msk(Rect(0, 0, 640, 240)) = 255;
+	sup_msk(Rect(0, 0, image_width, image_height/2)) = 255;
 	masked_red_small_area.copyTo(app,sup_msk);
 	bitwise_or(erosion_dst,app,erosion_dst);
 	Dilation(erosion_dst, dilation_dst);
@@ -278,35 +278,12 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
  	IplImage tmp=masked_red_small_area;
 	IplImage* img = &tmp;
 
-	/*IplImage img2 = image;
-	IplImage* img3 = &img2;*/
-
-	/*IplImage tt = original_image_hsv;
-	IplImage* hsv2 = &tt;
-
-	//cvCopy(img,img,hsv2);
-	//bitwise_or(image,image,image,original_image_hsv);
-	//img = &(*img & *hsv2);
-	//imshow("prova",image);
-
-	/*namedWindow("image after mask");
-	cvShowImage("image after mask",img);
-*/
-
-	//cvErode(img, img, 0, 2);
-	//smooth the original image using Gaussian kernel to remove noise
-	//cvSmooth(img, img, CV_GAUSSIAN,3,3);
-
-	//converting the original image into grayscale
+	// Conversion of the original image into grayscale
 	imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1); 
 	cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
-
-	//thresholding the grayscale image to get better results
-	//cvThreshold(imgGrayScale,imgGrayScale,minT,maxT,CV_THRESH_BINARY_INV);
-
 	
 
-	//finding all contours in the image
+	// Finding all contours in the image
 	cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
 	img2 = image;
