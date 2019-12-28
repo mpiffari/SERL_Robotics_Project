@@ -143,7 +143,7 @@ ArrowFinder::~ArrowFinder() {
 }
 
 
-list<freccia> ArrowFinder::findArrows(cv::Mat image) {
+list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
 	R_traslation <<1,0,0,0,
 				    0,1,0,0,
@@ -159,7 +159,7 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 				 	0,0,0,1;	
 
   
-	list <arrow> freccie;
+	list <composed_arrow_info> freccie;
 	Mat original_image_hsv;
 	Mat hsv_red, hsv_blue;
 	Mat img_masked_red, img_masked_blue, img_masked_red_blue;
@@ -196,25 +196,22 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 		createTrackbar("MinV blue", BlueThreshold, &MinV_B, 255);
 		createTrackbar("MaxV blue", BlueThreshold, &MaxV_B, 255);
 	}
-	//gaussian blur
-	//image.convertTo(image,-1,1,-PARAM);
+
+	// Gaussian blur on acquired image
 	GaussianBlur(image, image, Size(3,3), 0);
-	
-	
 
+	// Conversion of acquired image from orginal format to HSV color format
+	cvtColor(image, original_image_hsv, CV_BGR2HSV);
 
-	cvtColor(image, hsv, CV_BGR2HSV);	//Converto in formato HSV
+	// Filter of original image acquired using color threshold (red and blue one)
+	inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);	
+	inRange(original_image_hsv, Scalar(MinH_B, MinS_B, MinV_B), Scalar(MaxH_B, MaxS_B, MaxV_B), hsv_blue);
 
-	inRange(hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);	//Range di colori d considerare - red
-	inRange(hsv, Scalar(MinH_B, MinS_B, MinV_B), Scalar(MaxH_B, MaxS_B, MaxV_B), hsv_blue);	//Range di colori d considerare - blue
-	
-	//bitwise_or(hsv_red, hsv_red, hsv);
-	image.copyTo(img_masked_red,hsv_red);
-	//imshow("msk_red_1", img_masked_red);
-	image.copyTo(img_masked_blue,hsv_blue);
-	bitwise_or(hsv_red, hsv_blue, hsv);
-	image.copyTo(img_masked_red_blue,hsv);
-
+	// "img_masked_red" and "img_masked_blue" will contain only the red and the blue part (with some tolerance) of the original image
+	image.copyTo(img_masked_red,hsv_red); // Copy the original_image to destination "img_masked_red", using as mask the matrix obtain from red InRange
+	image.copyTo(img_masked_blue,hsv_blue); // Copy the original_image to destination "img_masked_blue", using as mask the matrix obtain from blue InRange
+	bitwise_or(hsv_red, hsv_blue, original_image_hsv); // After this command we will get the reed and blue colour layer together
+	image.copyTo(img_masked_red_blue,original_image_hsv); // In "original_image_hsv" there will be red and blue parts matched together
 
 	
 	/*_______________________________________________________________*/
@@ -283,7 +280,7 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 
 	//imshow(str_r,hsv_red);
 	//imshow(str_b,hsv_blue);
-	//imshow("IMAGE MASKED BY RED AND BLUE", hsv);
+	//imshow("IMAGE MASKED BY RED AND BLUE", original_image_hsv);
 
 	IplImage tmp1=img_masked_red_blue;
 	IplImage* output = &tmp1;
@@ -294,11 +291,11 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 	/*IplImage img2 = image;
 	IplImage* img3 = &img2;*/
 
-	/*IplImage tt = hsv;
+	/*IplImage tt = original_image_hsv;
 	IplImage* hsv2 = &tt;
 
 	//cvCopy(img,img,hsv2);
-	//bitwise_or(image,image,image,hsv);
+	//bitwise_or(image,image,image,original_image_hsv);
 	//img = &(*img & *hsv2);
 	//imshow("prova",image);
 
@@ -496,9 +493,9 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 
 		//filtro le freccie in base alla distanza tra il centro del triangolo e il centro del rettangolo
 		if(min_value < lower_dst_rect_triang){
-			freccia_divisa f;
-			f.centro_triangolo = (*i).first;
-			f.centro_rettangolo = min.first;
+			composed_arrow_info f;
+			f.center_triangle = (*i).first;
+			f.center_rectangle = min.first;
 			f.area = (*i).second + min.second;
 
 			freccie.push_back(f);
@@ -507,10 +504,10 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 	}
 
 	//compute the orientation of the arrows
-	list <freccia> arrow_output;
+	list <arrow_info> arrow_output;
 	float coefficiente_angolare, angolo_deg;
-	for (list<freccia_divisa>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
-		freccia new_arrow;
+	for (list<composed_arrow_info>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
+		arrow_info new_arrow;
 		new_arrow.center.x = ((*i).centro_rettangolo.x + (*i).centro_triangolo.x) / 2;
 		new_arrow.center.y = ((*i).centro_rettangolo.y + (*i).centro_triangolo.y) / 2;
 
@@ -550,11 +547,11 @@ list<freccia> ArrowFinder::findArrows(cv::Mat image) {
 }
 
 
-const freccia* ArrowFinder::getBiggestArrow( list<freccia> arrow_list) {
-	const freccia* max = nullptr;
+const arrow_info* ArrowFinder::getBiggestArrow( list<arrow_info> arrow_list) {
+	const arrow_info* max = nullptr;
 	//filter on the area of the arrows
 	if(arrow_list.size() != 0) {
-		list<freccia>::const_iterator f = arrow_list.begin();
+		list<arrow_info>::const_iterator f = arrow_list.begin();
 		max = &(*f);
 		for (f; f != arrow_list.end(); ++f) {
 		   if((*max).area < (*f).area)
@@ -568,7 +565,7 @@ const freccia* ArrowFinder::getBiggestArrow( list<freccia> arrow_list) {
 		return max;
 }
 
-VectorXf ArrowFinder::worldCoordinates(const freccia* arrow){
+VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
 	U_cam << (*arrow).center.x,(*arrow).center.y;
 	
 	// ==== ALGORITMO RICONOSIMENTO DISTANZA ====
@@ -591,8 +588,8 @@ void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 
 	//filtro sulla freccia di area maggiore
 	if(freccie.size() != 0) {
-		list<freccia>::const_iterator f = freccie.begin();
-		freccia max = *f;
+		list<arrow_info>::const_iterator f = freccie.begin();
+		arrow_info max = *f;
 		for (f; f != freccie.end(); ++f) {
 		   if(max.area < (*f).area)
 		   		max = *f;
