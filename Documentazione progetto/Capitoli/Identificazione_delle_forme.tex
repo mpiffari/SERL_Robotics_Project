@@ -1,0 +1,67 @@
+\section{Definizione del problema}
+IL capitolo precedente ha mostrato come sia possibile ottenere dei contorni, delle figure data una immagine a colori RGB.
+È ora necessario identificare la forma di ciascuno di questi contorni riconoscendo così i vari quadrati e rettangoli presenti nell'immagine che avessero, una volta acquisiti dalla camera, il colore specificato. Come ultimo passaggio va svolto il controllo per verificare che esista o meno una freccia; quest'ultima altro non è che un triangolo e un rettangolo sufficientemente vicini fra di loro.
+
+\section{Interpolazione}
+Per approssimare il contorno ottenuto e filtrato attraverso le mask, come spiegato nel Capitolo 3, è necessario usare una funzione che approssima un poligono con un altro poligono con meno vertici così che la distanza tra di essi sia inferiore ad una certa soglia. Tale funzione è così definita nella libreria OpenCV:
+
+\begin{quotation}
+	\textsl{void approxPolyDP(InputArray curve, OutputArray approxCurve, double epsilon, bool closed)}
+\end{quotation}
+
+Si è reso necessario effettuare un tuning del parametro \textsl{double epsilon} in quanto, per frecce diverse, a distanza variabile e con orientazione non fissa erano ottimali diversi valori. Il valore che più si adattava a tutti i casi presi in considerazione è stato ottenuto sperimentalmente e corrisponde a \textsl{double epsilon=0.045}.
+
+La funzione di cui sopra restituisce quindi una lista di poligoni ognuno dei quali ha una lista dei propri vertici.
+Il passo successivo è stato cercare nella lista dei poligoni un poligono che avesse 4 lati nel caso di un rettangolo e 3 in quello di un triangolo:
+
+\begin{lstlisting}[language=c]
+IF (result->total >= 3  && result->total <= 3 && 
+fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang)
+\end{lstlisting}
+\begin{lstlisting}[language=c]
+IF(result->total >= 4  && result->total <= 6 && 
+fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect)
+\end{lstlisting}
+
+Sempre per via sperimentale è stato possibile scoprire che vincolando il poligono che approssima il quadrilatero cercato ad avere tra i 4 e i 6 lati, la probabilità di riconoscere correttamente un quadrato aumentava.Per il triangolo questo non si è reso necessario vista già gli ottimi risultati con la ricerca vincolata a 3 lati.
+
+Ottenuti ora tutti i quadrati e i rettangoli sufficientemente grandi nella figura va affrontato il problema del riconoscimento di ogni freccia presente nel seguente modo:
+\begin{itemize}
+	\item \textbf{} per ciascun rettangolo identificato, si calcola la distanza che intercorre tra esso e ogni triangolo riconosciuto. Per calcolare la distanza tra due figure è necessario calcolarne il centro prima:
+	\begin{itemize}
+		\item \textbf{}calcolo il centro del rettangolo
+		\item \textbf{}calcolo il baricentro del triangolo
+		\item \textbf{}caclolo la distanza cartesiana tra i due punto appena individuati
+	\end{itemize}
+	\item \textbf{} si tiene in considerazione solamente la distanza minore calcolata.
+	\item \textbf{} si confronta suddetto valore con un valore di soglia sperimentale; se questo è minore allora si può assumere che il triangolo e il quadrato presi in considerazione siano una freccia.
+	\item \textbf{} la freccia appena rilevata viene aggiunta alla lista di frecce rilevate nell'immagine.
+\end{itemize}
+Per ogni freccia, che ora latro non è che una coppia di punti,
+\begin{equation}
+	\begin{split}
+		C_{triangolo}=(x_t,y_t)\\ 
+		C_{rettangolo}=(x_r,y_r)
+	\end{split}
+\end{equation}
+
+vanno identificati nell'ordine:
+\begin{itemize}
+	\item \textbf{}il centro della freccia, ottenuto come il punto medio del segmento che collega i due centri che definivano la freccia precedentemente.
+	$$
+		C_{freccia}=(\dfrac{x_t+x_r}{2},\dfrac{y_t+y_r}{2})
+	$$
+	\item \textbf{}L'inclinazione della freccia nel piano, calcolata come:
+		\begin{equation}
+			\begin{split}
+				\phi=atan(\frac{\Delta y}{\Delta x}), dove\\
+				\Delta y=y_t-y_r\\
+				\Delta x=x_t-x_r
+			\end{split}
+		\end{equation}
+	\item \textbf{}L'area dell'oggetto freccia, ricavata come somma dell'area del triangolo e del quadrato.
+	
+	
+	
+
+\end{itemize}	
