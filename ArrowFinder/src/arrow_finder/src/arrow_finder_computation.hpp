@@ -73,23 +73,15 @@ using namespace Eigen;
 using namespace std;
 using namespace cv;
 
-// TODO: il prof vuole aggiungere nell'interfaccia due metodi:
-// - setImage
-// - getImage --> l'elaborazione deve avvenire solamente quando il robot chiama il metodo getImage e 
-// non quando è disponibile un'immagine. In questo modo non tutte le immagini saranno utilizzate, ma solamente
-// quelle che voglio.
-// Si può realizzare usando un flag booleano per abilitato quando inizio la computazione
-// e disabilitato quando finisce; il tutto deve essere regolato da un accesso concorrente.
-
-struct freccia{
-	CvPoint center;  	//of the arrow
-	float orientation;	//in degrees
+struct arrow_info {
+	CvPoint center;  	// Computed center of the arrow
+	float orientation;	// Orientation in degrees
 	float area; 
 };
 
-struct freccia_divisa{
-	CvPoint centro_triangolo;
-	CvPoint centro_rettangolo;
+struct composed_arrow_info {
+    CvPoint center_triangle;
+    CvPoint center_rectangle;
 	float area; 
 };
 
@@ -99,35 +91,33 @@ class ArrowFinder {
   	
   	
 
-    std::vector<cv::Point2f> output;	//Coordinate dei marcatori
+    std::vector<cv::Point2f> output;	// Marker coordinates
     ArrowFinder();
     ~ArrowFinder();
 
    // bool setup(const std::string &filename);
+
     /*
-    	return: true se abbimao trovato un immagine
+    	return: true if we find an image
     */
     void setImage(cv::Mat original_image, int image_height, int image_width);
 
 	/*
 	*	@return: a list containing all the arrows found into original_image
 	*/
-    list<freccia> findArrows(cv::Mat image);
+    list<arrow_info> findArrows(cv::Mat image);
 
     /*
     * @return: the biggest arrow in the arrow_list
     */
-    const freccia* getBiggestArrow( list<freccia> arrow_list);
+    const arrow_info* getBiggestArrow( list<arrow_info> arrow_list);
 
-    //convert from image coordiantes to world coordinates
-    VectorXf worldCoordinates(const freccia* arrow);
+    // Convert from image coordiantes to world coordinates
+    VectorXf worldCoordinates(const arrow_info* arrow);
 
 
-    //output come messaggio ros pubblicato 
-    //indipendenza dalle librerie di ROS
-
- 
-
+    //TODO: result of computation will be pubblished with ROS throw a topic
+    //or keep indipendent from ROS
 };
 
 #endif
