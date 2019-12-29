@@ -167,6 +167,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat image_eroded = Mat::zeros(image_height, image_width, CV_8U);
   Mat image_dilated = Mat::zeros(image_height, image_width, CV_8U);
   Mat superior_half_mask = Mat::zeros(image_height, image_width, CV_8U); // Initialization as all zeros
+//TODO CAMBIA IL NOMEEEEEEEEEEEEEE
   Mat image_eroded_only_sup_half = Mat::zeros(image_height, image_width, CV_8U);
   CvSeq* contour;  // Hold the pointer to a contour
   CvSeq* result;   // Hold sequence of points of a contour
