@@ -50,11 +50,6 @@
 *******************************************************************************/
 #include "arrow_finder_computation.hpp"
 
-
-
-
-
-
 //settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
 //trovo le arrows in diagonale
 ArrowFinder::ArrowFinder() {
@@ -88,7 +83,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat image_eroded = Mat::zeros(image_height, image_width, CV_8U);
   Mat image_dilated = Mat::zeros(image_height, image_width, CV_8U);
   Mat superior_half_mask = Mat::zeros(image_height, image_width, CV_8U); // Initialization as all zeros
-  Mat image_eroded_only_sup_half = Mat::zeros(image_height, image_width, CV_8U);
+  Mat image_not_eroded_sup_half = Mat::zeros(image_height, image_width, CV_8U);
   CvSeq* contour;  // Hold the pointer to a contour
   CvSeq* result;   // Hold sequence of points of a contour
   CvMemStorage *storage = cvCreateMemStorage(0); // Storage area for all contours
@@ -154,8 +149,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Erosion(image_without_red_areas, image_eroded); // "image_without_red_areas" will be under erosion, while the result of the erosion will load in "image_eroded"
 
   superior_half_mask(Rect(0, 0, image_width, image_height/2)) = 255;
-  image_without_red_areas.copyTo(image_eroded_only_sup_half,superior_half_mask);
-  bitwise_or(image_eroded,image_eroded_only_sup_half,image_eroded);
+  image_without_red_areas.copyTo(image_not_eroded_sup_half,superior_half_mask);
+  bitwise_or(image_eroded,image_not_eroded_sup_half,image_eroded);
   Dilation(image_eroded, image_dilated);
 
   // ============================================================= RED RECTANGLE =============================================================
