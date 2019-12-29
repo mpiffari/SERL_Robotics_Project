@@ -1,4 +1,4 @@
-\select@language {english}
+\babel@toc {english}{}
 \contentsline {chapter}{\numberline {1}Stato dell'arte}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}SAL - Stato avanzamento lavori}{1}{section.1.1}
 \contentsline {chapter}{\numberline {2}Camera}{5}{chapter.2}
