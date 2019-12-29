@@ -236,6 +236,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   bitwise_or(image_eroded,image_eroded_only_sup_half,image_eroded);
   Dilation(image_eroded, image_dilated);
 
+  // ============================================================= RED RECTANGLE =============================================================
   IplImage tmp1=img_masked_red_blue;
   IplImage* output = &tmp1;
 
@@ -293,8 +294,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   cvReleaseImage(&imgGrayScale);
   free(contour);
   cvReleaseMemStorage(&storage);
-  //-----------TRIANGOLI BLUE
 
+  // ============================================================= BLUE TRIANGLE =============================================================
   tmp=img_masked_blue;
   img_without_noise = &tmp;
 
@@ -304,141 +305,113 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   storage = cvCreateMemStorage(0);
   cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
-
   img2 = image;
   img3 = &img2;
-  //printf("%s\n","______________ciclo_____________" );
-  //flag=false;
   contour_i=contour;
 
-
-
-  //iterating through each contour
+  // Iteration over each countor found in image after tuning (removing of tiny red area - erosion - dilatation)
   while(contour) {
-    //obtain a sequence of points of the countour, pointed by the variable 'countour'
     result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.12, 0);
+    //if there are 3 vertices in the contour and the area of the triangle is more than lower_area_triang pixels
+    if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang) {
+      cvDrawContours(img3, result, cvScalar(255,255,0), cvScalar(255,255,0), 100, 2);
 
-    /*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
-    if(area>maxArea) {
-    maxArea = area;
-  }*/
+      CvPoint *pt[3];
+      for(int i=0;i<3;i++) {
+        pt[i] = (CvPoint*)cvGetSeqElem(result, i);
+        cvCircle(output, *pt[i], 5, cvScalar(255,0,0)); // Draw circle over each vertice found
+      }
 
+      // Drawing lines around the contour
+      cvLine(output, *pt[0], *pt[1], cvScalar(255,0,0),2);
+      cvLine(output, *pt[1], *pt[2], cvScalar(255,0,0),2);
+      cvLine(output, *pt[2], *pt[0], cvScalar(255,0,0),2);
 
-  //if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
-  if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang) {
-    cvDrawContours(img3, result, cvScalar(255,255,0), cvScalar(255,255,0), 100, 2);
+      CvMoments moments;
+      cvMoments(result, &moments);
+      int center_x = moments.m10 / moments.m00;
+      int center_y = moments.m01 / moments.m00;
+      pair<CvPoint,float> center_and_area(CvPoint(center_x,center_y), cvContourArea(contour));
+      centri_triangoli.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
 
-    //flag=true;
-    //iterating through each point
-    CvPoint *pt[3];
-    for(int i=0;i<3;i++) {
-      pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-      cvCircle(output, *pt[i], 5, cvScalar(255,0,0));
+      cvCircle(output, center_and_area.first, 3, cvScalar(255,0,255),3);
+      //std::cout <<"("<< center_and_area.first.x << "," << center_and_rea.first.y <<")"<< endl;
+    }
+    contour = contour->h_next;
+  }
+
+  //calcolo le freccie e la loro area
+  //i è l'iteratore dei triangoli
+  //j è l'iteratore dei rettangoli
+  for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
+
+    list<pair<CvPoint,float>>::const_iterator j;
+    pair<CvPoint,float> min = (*(centri_rettangoli.begin()));
+    int min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
+
+    //calcolo il rettangolo di distanza minima dal triangolo i
+    for (j = centri_rettangoli.begin(); j != centri_rettangoli.end(); ++j) {
+      //cout<<"#"<<sqrt((pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)))<<" < "<<min_value<<endl;
+      if(  sqrt(pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)) < min_value){
+        min = *j;
+        //cout<<"OK"<<endl;
+        min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
+      }
     }
 
+    //filtro le freccie in base alla distanza tra il centro del triangolo e il centro del rettangolo
+    if(min_value < lower_dst_rect_triang){
+      composed_arrow_info f;
+      f.center_triangle = (*i).first;
+      f.center_rectangle = min.first;
+      f.area = (*i).second + min.second;
 
-    //drawing lines around the heptagon
-    cvLine(output, *pt[0], *pt[1], cvScalar(255,0,0),2);
-    cvLine(output, *pt[1], *pt[2], cvScalar(255,0,0),2);
-    cvLine(output, *pt[2], *pt[0], cvScalar(255,0,0),2);
-    //free(pt);
-    CvMoments moments;
-    cvMoments(result, &moments);
-    int centro_x = moments.m10 / moments.m00;
-    int centro_y = moments.m01 / moments.m00;
-    //cout<<"centro x: "<<centro_x<<" | centro y: "<<centro_y<<endl;
-
-
-    pair<CvPoint,float> rr(CvPoint(centro_x,centro_y), cvContourArea(contour));
-    centri_triangoli.push_back(rr);
-
-  }
-  contour = contour->h_next;
-}
-
-//TODO: spostare nel ciclo precedente
-list<pair<CvPoint,float>>::const_iterator i;
-for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
-  //cout <<"("<< (*i).first.x <<","<<(*i).first.y<<")"<<endl;
-  cvCircle(output, (*i).first, 3, cvScalar(255,0,255),3);
-}
-
-
-
-
-
-//calcolo le freccie e la loro area
-//i è l'iteratore dei triangoli
-//j è l'iteratore dei rettangoli
-for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
-
-  list<pair<CvPoint,float>>::const_iterator j;
-  pair<CvPoint,float> min = (*(centri_rettangoli.begin()));
-  int min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
-
-  //calcolo il rettangolo di distanza minima dal triangolo i
-  for (j = centri_rettangoli.begin(); j != centri_rettangoli.end(); ++j) {
-    //cout<<"#"<<sqrt((pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)))<<" < "<<min_value<<endl;
-    if(  sqrt(pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)) < min_value){
-      min = *j;
-      //cout<<"OK"<<endl;
-      min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
+      freccie.push_back(f);
+      cvLine(output, f.center_rectangle, f.center_triangle, cvScalar(180,55,69),2);
     }
   }
 
-  //filtro le freccie in base alla distanza tra il centro del triangolo e il centro del rettangolo
-  if(min_value < lower_dst_rect_triang){
-    composed_arrow_info f;
-    f.center_triangle = (*i).first;
-    f.center_rectangle = min.first;
-    f.area = (*i).second + min.second;
+  //compute the orientation of the arrows
+  list <arrow_info> arrow_output;
+  float coefficiente_angolare, angolo_deg;
+  for (list<composed_arrow_info>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
+    arrow_info new_arrow;
+    new_arrow.center.x = ((*i).center_rectangle.x + (*i).center_triangle.x) / 2;
+    new_arrow.center.y = ((*i).center_rectangle.y + (*i).center_triangle.y) / 2;
 
-    freccie.push_back(f);
-    cvLine(output, f.center_rectangle, f.center_triangle, cvScalar(180,55,69),2);
-  }
-}
+    coefficiente_angolare = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
 
-//compute the orientation of the arrows
-list <arrow_info> arrow_output;
-float coefficiente_angolare, angolo_deg;
-for (list<composed_arrow_info>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
-  arrow_info new_arrow;
-  new_arrow.center.x = ((*i).center_rectangle.x + (*i).center_triangle.x) / 2;
-  new_arrow.center.y = ((*i).center_rectangle.y + (*i).center_triangle.y) / 2;
+    if(coefficiente_angolare>0) {
+      angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+      if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
+      angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+    } else {
+      angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+      if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
+      angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+    }
 
-  coefficiente_angolare = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
-
-  if(coefficiente_angolare>0) {
-    angolo_deg = atan(coefficiente_angolare)*180/M_PI;
-    if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
-    angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
-  } else {
-    angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
-    if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
-    angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+    new_arrow.orientation = angolo_deg;
+    new_arrow.area = (*i).area;
+    arrow_output.push_back(new_arrow);
   }
 
-  new_arrow.orientation = angolo_deg;
-  new_arrow.area = (*i).area;
-  arrow_output.push_back(new_arrow);
-}
 
+  //show the image in which identified shapes are marked
+  cvNamedWindow("Tracked");
+  cvShowImage("Tracked",output);
 
-//show the image in which identified shapes are marked
-cvNamedWindow("Tracked");
-cvShowImage("Tracked",output);
-
-// Immagine acquisita da camera in rgb8
-//imshow("Immagine acquisita",image);
+  // Immagine acquisita da camera in rgb8
+  //imshow("Immagine acquisita",image);
 
 
 
-cvReleaseImage(&imgGrayScale);
-free(contour);
-cvClearMemStorage(storage);
-cvReleaseMemStorage(&storage);
+  cvReleaseImage(&imgGrayScale);
+  free(contour);
+  cvClearMemStorage(storage);
+  cvReleaseMemStorage(&storage);
 
-return arrow_output;
+  return arrow_output;
 }
 
 
