@@ -52,13 +52,9 @@
 
 //settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
 //trovo le arrows in diagonale
-ArrowFinder::ArrowFinder() {
+ArrowFinder::ArrowFinder(int height = 640, int width = 480):image_height(height),image_width(width) {}
 
-}
-
-ArrowFinder::~ArrowFinder() {
-}
-
+ArrowFinder::~ArrowFinder() {}
 
 list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 

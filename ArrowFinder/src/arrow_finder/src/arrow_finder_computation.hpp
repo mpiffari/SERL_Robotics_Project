@@ -61,9 +61,7 @@
 #include "/home/serl/SERL_Project/Eigen_library/Eigen/Dense"
 
 
-//Image dimensions
-#define image_height 640
-#define image_width	 480
+
 //Parameters used to filter out noisily points in the original image
 //[pixel^2] Lower threshold useful to reduce the presence of undesired figure
 #define lower_area_rect         50 
@@ -151,10 +149,13 @@ class ArrowFinder {
 		float c_y = 255.988008;
 		float h_cam = 0.310; // Height of the camera from the ground expressed in [m]
 		float scale; // Scale factor used to detect deepness of the point
+		//Image dimensions
+		int image_height;
+		int image_width;
 
 	public:
 	    std::vector<cv::Point2f> output;	// Marker coordinates
-	    ArrowFinder();
+	    ArrowFinder(int,int);
 	    ~ArrowFinder();
 
 	   // bool setup(const std::string &filename);
