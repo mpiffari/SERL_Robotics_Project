@@ -251,77 +251,54 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
   img2 = image;
   img3 = &img2;
-  //printf("%s\n","______________ciclo_____________" );
-  //bool flag=false;
   CvSeq* contour_i=contour;
 
-  //iterating through each contour
+  // Iteration over each countor found in image after tuning (removing of tiny red area - erosion - dilatation)
   while(contour) {
-    //obtain a sequence of points of the countour, pointed by the variable 'countour'
-    //cout<<"PARAM: "<<cvContourPerimeter(contour)*(((float)PARAM)/1000)<<endl;
-    result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*/*(((float)PARAM)/1000)*/ 0.045, 0);
+    result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour) * 0.045, 0);
+    // If there are 4 to 6 vertices  in the contour and the area of the countour is more than lower_area_rect pixels
+    if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect) {
+      cvDrawContours(img3, result, cvScalar(0,0,0), cvScalar(0,0,0), 100, 2); // Draw countor found over the image
 
-    /*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
-    if(area>maxArea) {
-    maxArea = area;
-  }*/
+      CvPoint *pt[4]; // Could be that the countour has 6 vertices: in this case we will'not consider the last two point
+      for(int i = 0; i < 4; i++) {
+        pt[i] = (CvPoint*)cvGetSeqElem(result, i);
+        cvCircle(output, *pt[i], 5, cvScalar(0,0,255)); // Draw circle over each vertice found
+      }
 
+      // Drawing lines around the contour
+      cvLine(output, *pt[0], *pt[1], cvScalar(0,0,255),2);
+      cvLine(output, *pt[1], *pt[2], cvScalar(0,0,255),2);
+      cvLine(output, *pt[2], *pt[3], cvScalar(0,0,255),2);
+      cvLine(output, *pt[3], *pt[0], cvScalar(0,0,255),2);
 
-  //if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
-  if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect) {
+      CvMoments moments;
+      cvMoments(result, &moments);
+      int center_x = moments.m10 / moments.m00;
+      int center_y = moments.m01 / moments.m00;
+      pair<CvPoint,float> center(CvPoint(center_x,center_y), cvContourArea(contour));
+      centri_rettangoli.push_back(center); // Add the new center to the end of the all centers found in the image
 
-    cvDrawContours(img3, result, cvScalar(0,0,0), cvScalar(0,0,0), 100, 2);
-    //cout<<"PARAM: "<<cvContourPerimeter(contour)*(((float)PARAM)/1000)<<endl;
-    //flag=true;
-    //iterating through each point
-    CvPoint *pt[4];
-    for(int i=0;i<4;i++) {
-      pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-      cvCircle(output, *pt[i], 5, cvScalar(0,0,255));
+      //std::cout<<" Coordinate x of the center: "<< center_x <<" and coordinate y of the center: "<< center_y << endl;
+      //std::cout<<" ******************* Number of verticies "<<result->total;
+      //std::cout<<" ******************* Area "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
     }
-
-
-    //drawing lines around the heptagon
-    cvLine(output, *pt[0], *pt[1], cvScalar(0,0,255),2);
-    cvLine(output, *pt[1], *pt[2], cvScalar(0,0,255),2);
-    cvLine(output, *pt[2], *pt[3], cvScalar(0,0,255),2);
-    cvLine(output, *pt[3], *pt[0], cvScalar(0,0,255),2);
-    //free(pt);
-    //std::cout<<"*******************Vertici "<<result->total;
-    //std::cout<<"*******************AREA "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
-
-    CvMoments moments;
-    cvMoments(result, &moments);
-    int centro_x = moments.m10 / moments.m00;
-    int centro_y = moments.m01 / moments.m00;
-    //cout<<"centro x: "<<centro_x<<" | centro y: "<<centro_y<<endl;
-    pair<CvPoint,float> r(CvPoint(centro_x,centro_y), cvContourArea(contour));
-    centri_rettangoli.push_back(r);
+    // Obtain the next contour
+    contour = contour->h_next;
   }
 
-  //printf("aerea %d, vertici %d\n",fabs(cvContourArea(result, CV_WHOLE_SEQ)), result->total);
-  //obtain the next contour
-  contour = contour->h_next;
-  /*if(result->total>2){
-  std::cout<<"*******************Vertici "<<result->total;
-  std::cout<<"*******************AREA "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
 
-}*/
-
-}
-
-
-//TODO: spostare nel ciclo precedente
-list<pair<CvPoint,float>>::const_iterator iterator;
-for (iterator = centri_rettangoli.begin(); iterator != centri_rettangoli.end(); ++iterator) {
-  //cout <<"("<< (*iterator).first.x <<","<<(*iterator).first.y<<")"<<endl;
-  cvCircle(output, (*iterator).first, 3, cvScalar(255,255,255),3);
-}
-/*while(contour_i && !flag)
-{
-result = cvApproxPoly(contour_i, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour_i)*0.02, 0);
-printf("aerea %d, vertici %d\n",fabs(cvContourArea(result, CV_WHOLE_SEQ)), result->total);
-contour_i = contour_i->h_next;
+  //TODO: spostare nel ciclo precedente
+  list<pair<CvPoint,float>>::const_iterator iterator;
+  for (iterator = centri_rettangoli.begin(); iterator != centri_rettangoli.end(); ++iterator) {
+    //cout <<"("<< (*iterator).first.x <<","<<(*iterator).first.y<<")"<<endl;
+    cvCircle(output, (*iterator).first, 3, cvScalar(255,255,255),3);
+  }
+  /*while(contour_i && !flag)
+  {
+  result = cvApproxPoly(contour_i, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour_i)*0.02, 0);
+  printf("aerea %d, vertici %d\n",fabs(cvContourArea(result, CV_WHOLE_SEQ)), result->total);
+  contour_i = contour_i->h_next;
 }*/
 
 
