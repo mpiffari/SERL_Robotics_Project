@@ -235,20 +235,18 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   image_without_red_areas.copyTo(image_eroded_only_sup_half,superior_half_mask);
   bitwise_or(image_eroded,image_eroded_only_sup_half,image_eroded);
   Dilation(image_eroded, image_dilated);
-  image_without_red_areas = image_dilated;
 
   IplImage tmp1=img_masked_red_blue;
   IplImage* output = &tmp1;
 
-  IplImage tmp=image_without_red_areas;
-  IplImage* img = &tmp;
+  IplImage tmp=image_dilated;
+  IplImage* img_without_noise = &tmp;
 
-  // Conversion of the original image into grayscale
-  imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1);
-  cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
+  // Conversion of the original image, after removing of tiny red areas-erosion-dilatation, into grayscale
+  imgGrayScale = cvCreateImage(cvGetSize(img_without_noise), 8, 1);
+  cvCvtColor(img_without_noise,imgGrayScale,CV_BGR2GRAY);
 
-
-  // Finding all contours in the image
+  // Finding all contours in the grayscale image without tiny areas and with erosion and dilatation
   cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
   img2 = image;
@@ -333,10 +331,10 @@ cvReleaseMemStorage(&storage);
 //-----------TRIANGOLI BLUE
 
 tmp=img_masked_blue;
-img = &tmp;
+img_without_noise = &tmp;
 
-imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1);
-cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
+imgGrayScale = cvCreateImage(cvGetSize(img_without_noise), 8, 1);
+cvCvtColor(img_without_noise,imgGrayScale,CV_BGR2GRAY);
 
 storage = cvCreateMemStorage(0);
 cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
