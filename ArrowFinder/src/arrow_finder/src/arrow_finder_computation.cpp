@@ -165,8 +165,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat hsv_red, hsv_blue;
   Mat img_masked_red, img_masked_blue, img_masked_red_blue;
   Mat src = Mat::zeros(image_height, image_width, CV_8U);
-  Mat erosion_dst = Mat::zeros(image_height, image_width, CV_8U);
-  Mat dilation_dst = Mat::zeros(image_height, image_width, CV_8U);
+  Mat image_eroded = Mat::zeros(image_height, image_width, CV_8U);
+  Mat image_dilated = Mat::zeros(image_height, image_width, CV_8U);
   Mat sup_msk = Mat::zeros(image_height, image_width, CV_8U); // all 0
   Mat app = Mat::zeros(image_height, image_width, CV_8U);
   CvSeq* contour;  // Hold the pointer to a contour
@@ -227,19 +227,17 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size); //,Dilation);
   }
 
-
-  // TODO: racchiudere in una funzione (red_hsv_dimension_filter() per esempio)
   Mat masked_red_small_area = tinyRedFiltering(img_masked_red);
 
   //Erode and dilatate
-  src = masked_red_small_area;
-  Erosion(src, erosion_dst);
+  src = masked_red_small_area; // "src" equals to image without tiny red points
+  Erosion(src, image_eroded); // "src" will be under erosion, while the result of the erosion will load in "image_eroded"
 
   sup_msk(Rect(0, 0, image_width, image_height/2)) = 255;
   masked_red_small_area.copyTo(app,sup_msk);
-  bitwise_or(erosion_dst,app,erosion_dst);
-  Dilation(erosion_dst, dilation_dst);
-  masked_red_small_area = dilation_dst;
+  bitwise_or(image_eroded,app,image_eroded);
+  Dilation(image_eroded, image_dilated);
+  masked_red_small_area = image_dilated;
 
   IplImage tmp1=img_masked_red_blue;
   IplImage* output = &tmp1;
