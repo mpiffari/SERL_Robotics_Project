@@ -229,6 +229,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat image_without_red_areas = tinyRedFiltering(img_masked_red);
 
   //Erode and dilatate
+  // TODO: check ordine erosione/dilatazione
   Erosion(image_without_red_areas, image_eroded); // "image_without_red_areas" will be under erosion, while the result of the erosion will load in "image_eroded"
 
   superior_half_mask(Rect(0, 0, image_width, image_height/2)) = 255;
@@ -237,6 +238,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Dilation(image_eroded, image_dilated);
 
   // ============================================================= RED RECTANGLE =============================================================
+  // TODO: check correttezza immagine assegnata a tmp1 (non andrebbe solo img_masked_red)
   IplImage tmp1=img_masked_red_blue;
   IplImage* output = &tmp1;
 
@@ -343,6 +345,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   //calcolo le freccie e la loro area
   //i è l'iteratore dei triangoli
   //j è l'iteratore dei rettangoli
+  list<pair<CvPoint,float>>::const_iterator i;
   for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
 
     list<pair<CvPoint,float>>::const_iterator j;
