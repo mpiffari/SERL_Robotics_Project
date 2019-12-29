@@ -1,22 +1,22 @@
 \section{Definizione del problema}
-Nel capitolo precedente è stato illustrato un metodo atto all'identificazione delle frecce che rientrano nel campo visivo della camera. Viene ora trattato come sia possibile ottenere la posizione della freccia, precedentemente ottenuta, nelle coordinate 3D UVW rispetto alla base del robot.
+Nel capitolo precedente è stato illustrato un metodo atto all'identificazione delle frecce che rientrano nel campo visivo della camera. Viene ora trattato come sia possibile ottenere la posizione della freccia, precedentemente ottenuta, nelle coordinate 3D (U,V,W) rispetto alla base del robot.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Immagini/world_coords.png}
-	\caption{schema concettuale delle diverse coordinate}
+	\caption{Schema concettuale delle diverse coordinate}
 	\label{fig:fromcamtoworld}
 \end{figure}
 
 Come si vede in Fig.\ref{fig:fromcamtoworld} si devono effettuare tre trasformazioni per ottenere a partire dalle world coordinates le pixel coordinates.
-Il problema, nel caso specifico preso in considerazione, risulta essere l'opposto: dalle coordinate nella camera è necessario ottenere le coordinate globali dell'oggetto effettuando una trasformazione inversa.
-Si analizzeranno ora le singole trasformazioni che permetteranno alla fine di ottenere una trasformazione globale.
+Il problema, nel caso specifico preso in considerazione dal report, risulta essere l'opposto: dalle coordinate nella camera è necessario ottenere la posizione globale dell'oggetto effettuando una trasformazione inversa.
+Si analizzeranno ora le singole trasformazioni che permetteranno alla fine di ottenere il risultato voluto.
 
 \section{Da wolrd coordinates to camera coordinates}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.4\textwidth]{Immagini/SupportoCamera_asse1.jpg}
-	\caption{posizione del world frame}
+	\caption{Posizione del world frame}
 	\label{fig:worldframe}
 \end{figure}
 
@@ -45,7 +45,7 @@ INSERISCI LA FOTO DELLA CAMERA SUL PALO PER FAR CAPIRE IL CONCETTO!!!!!!!!!!!!!!
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{Immagini/perspective_projection.png}
-	\caption{descrizione del problema}
+	\caption{Descrizione del problema}
 	\label{fig:perspective_projection}
 \end{figure}
 In Fig.\ref{fig:perspective_projection} \textit{f} rappresenta il fuoco della camera, parametro ottenibile attraverso una procedura di calibrazione.
@@ -55,7 +55,7 @@ In Fig.\ref{fig:perspective_projection} \textit{f} rappresenta il fuoco della ca
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{Immagini/intrinsic_parameters.png}
-	\caption{descrizione dell'ultima trasformazione}
+	\caption{Descrizione dell'ultima trasformazione}
 	\label{fig:intrinsic_parameters}
 \end{figure}
 In Fig.\ref{fig:intrinsic_parameters} $ O_{x}$ e $ O_{y} $ sono anch'esse ricavabili tramite la procedura di calibrazione della camera
@@ -102,7 +102,7 @@ La seconda assunzione è, nella realtà dei fatti, una ipotesi corretta in quant
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{Immagini/piano_camera.jpeg}
-		\caption{piano del pavimento nel camera frame}
+		\caption{Piano del pavimento nel camera frame}
 		\label{fig:piano_camera}
 	\end{figure}
 	\item \textbf{}
