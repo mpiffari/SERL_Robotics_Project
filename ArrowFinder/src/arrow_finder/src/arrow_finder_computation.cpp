@@ -276,96 +276,84 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
       cvMoments(result, &moments);
       int center_x = moments.m10 / moments.m00;
       int center_y = moments.m01 / moments.m00;
-      pair<CvPoint,float> center(CvPoint(center_x,center_y), cvContourArea(contour));
-      centri_rettangoli.push_back(center); // Add the new center to the end of the all centers found in the image
+      pair<CvPoint,float> center_and_area(CvPoint(center_x,center_y), cvContourArea(contour));
+      centri_rettangoli.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
 
-      //std::cout<<" Coordinate x of the center: "<< center_x <<" and coordinate y of the center: "<< center_y << endl;
-      //std::cout<<" ******************* Number of verticies "<<result->total;
-      //std::cout<<" ******************* Area "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
+      cvCircle(output, center_and_area.first, 3, cvScalar(255,255,255),3);
+      //std::cout <<"("<< center_and_area.first.x << "," << center_and_area.first.y <<")"<< endl;
+      //std::cout <<" Coordinate x of the center: "<< center_x <<" and coordinate y of the center: "<< center_y << endl;
+      //std::cout <<" ******************* Number of verticies "<<result->total;
+      //std::cout <<" ******************* Area "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
     }
     // Obtain the next contour
     contour = contour->h_next;
   }
 
 
-  //TODO: spostare nel ciclo precedente
-  list<pair<CvPoint,float>>::const_iterator iterator;
-  for (iterator = centri_rettangoli.begin(); iterator != centri_rettangoli.end(); ++iterator) {
-    //cout <<"("<< (*iterator).first.x <<","<<(*iterator).first.y<<")"<<endl;
-    cvCircle(output, (*iterator).first, 3, cvScalar(255,255,255),3);
+  cvReleaseImage(&imgGrayScale);
+  free(contour);
+  cvReleaseMemStorage(&storage);
+  //-----------TRIANGOLI BLUE
+
+  tmp=img_masked_blue;
+  img_without_noise = &tmp;
+
+  imgGrayScale = cvCreateImage(cvGetSize(img_without_noise), 8, 1);
+  cvCvtColor(img_without_noise,imgGrayScale,CV_BGR2GRAY);
+
+  storage = cvCreateMemStorage(0);
+  cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+
+
+  img2 = image;
+  img3 = &img2;
+  //printf("%s\n","______________ciclo_____________" );
+  //flag=false;
+  contour_i=contour;
+
+
+
+  //iterating through each contour
+  while(contour) {
+    //obtain a sequence of points of the countour, pointed by the variable 'countour'
+    result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.12, 0);
+
+    /*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
+    if(area>maxArea) {
+    maxArea = area;
+  }*/
+
+
+  //if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
+  if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang) {
+    cvDrawContours(img3, result, cvScalar(255,255,0), cvScalar(255,255,0), 100, 2);
+
+    //flag=true;
+    //iterating through each point
+    CvPoint *pt[3];
+    for(int i=0;i<3;i++) {
+      pt[i] = (CvPoint*)cvGetSeqElem(result, i);
+      cvCircle(output, *pt[i], 5, cvScalar(255,0,0));
+    }
+
+
+    //drawing lines around the heptagon
+    cvLine(output, *pt[0], *pt[1], cvScalar(255,0,0),2);
+    cvLine(output, *pt[1], *pt[2], cvScalar(255,0,0),2);
+    cvLine(output, *pt[2], *pt[0], cvScalar(255,0,0),2);
+    //free(pt);
+    CvMoments moments;
+    cvMoments(result, &moments);
+    int centro_x = moments.m10 / moments.m00;
+    int centro_y = moments.m01 / moments.m00;
+    //cout<<"centro x: "<<centro_x<<" | centro y: "<<centro_y<<endl;
+
+
+    pair<CvPoint,float> rr(CvPoint(centro_x,centro_y), cvContourArea(contour));
+    centri_triangoli.push_back(rr);
+
   }
-  /*while(contour_i && !flag)
-  {
-  result = cvApproxPoly(contour_i, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour_i)*0.02, 0);
-  printf("aerea %d, vertici %d\n",fabs(cvContourArea(result, CV_WHOLE_SEQ)), result->total);
-  contour_i = contour_i->h_next;
-}*/
-
-
-cvReleaseImage(&imgGrayScale);
-free(contour);
-cvReleaseMemStorage(&storage);
-//-----------TRIANGOLI BLUE
-
-tmp=img_masked_blue;
-img_without_noise = &tmp;
-
-imgGrayScale = cvCreateImage(cvGetSize(img_without_noise), 8, 1);
-cvCvtColor(img_without_noise,imgGrayScale,CV_BGR2GRAY);
-
-storage = cvCreateMemStorage(0);
-cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
-
-
-img2 = image;
-img3 = &img2;
-//printf("%s\n","______________ciclo_____________" );
-//flag=false;
-contour_i=contour;
-
-
-
-//iterating through each contour
-while(contour) {
-  //obtain a sequence of points of the countour, pointed by the variable 'countour'
-  result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.12, 0);
-
-  /*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
-  if(area>maxArea) {
-  maxArea = area;
-}*/
-
-
-//if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
-if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang) {
-  cvDrawContours(img3, result, cvScalar(255,255,0), cvScalar(255,255,0), 100, 2);
-
-  //flag=true;
-  //iterating through each point
-  CvPoint *pt[3];
-  for(int i=0;i<3;i++) {
-    pt[i] = (CvPoint*)cvGetSeqElem(result, i);
-    cvCircle(output, *pt[i], 5, cvScalar(255,0,0));
-  }
-
-
-  //drawing lines around the heptagon
-  cvLine(output, *pt[0], *pt[1], cvScalar(255,0,0),2);
-  cvLine(output, *pt[1], *pt[2], cvScalar(255,0,0),2);
-  cvLine(output, *pt[2], *pt[0], cvScalar(255,0,0),2);
-  //free(pt);
-  CvMoments moments;
-  cvMoments(result, &moments);
-  int centro_x = moments.m10 / moments.m00;
-  int centro_y = moments.m01 / moments.m00;
-  //cout<<"centro x: "<<centro_x<<" | centro y: "<<centro_y<<endl;
-
-
-  pair<CvPoint,float> rr(CvPoint(centro_x,centro_y), cvContourArea(contour));
-  centri_triangoli.push_back(rr);
-
-}
-contour = contour->h_next;
+  contour = contour->h_next;
 }
 
 //TODO: spostare nel ciclo precedente
