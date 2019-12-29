@@ -164,11 +164,10 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat original_image_hsv;
   Mat hsv_red, hsv_blue;
   Mat img_masked_red, img_masked_blue, img_masked_red_blue;
-  Mat src = Mat::zeros(image_height, image_width, CV_8U);
   Mat image_eroded = Mat::zeros(image_height, image_width, CV_8U);
   Mat image_dilated = Mat::zeros(image_height, image_width, CV_8U);
-  Mat sup_msk = Mat::zeros(image_height, image_width, CV_8U); // all 0
-  Mat app = Mat::zeros(image_height, image_width, CV_8U);
+  Mat superior_half_mask = Mat::zeros(image_height, image_width, CV_8U); // Initialization as all zeros
+  Mat image_eroded_only_sup_half = Mat::zeros(image_height, image_width, CV_8U);
   CvSeq* contour;  // Hold the pointer to a contour
   CvSeq* result;   // Hold sequence of points of a contour
   CvMemStorage *storage = cvCreateMemStorage(0); // Storage area for all contours
@@ -227,22 +226,21 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size); //,Dilation);
   }
 
-  Mat masked_red_small_area = tinyRedFiltering(img_masked_red);
+  Mat image_without_red_areas = tinyRedFiltering(img_masked_red);
 
   //Erode and dilatate
-  src = masked_red_small_area; // "src" equals to image without tiny red points
-  Erosion(src, image_eroded); // "src" will be under erosion, while the result of the erosion will load in "image_eroded"
+  Erosion(image_without_red_areas, image_eroded); // "image_without_red_areas" will be under erosion, while the result of the erosion will load in "image_eroded"
 
-  sup_msk(Rect(0, 0, image_width, image_height/2)) = 255;
-  masked_red_small_area.copyTo(app,sup_msk);
-  bitwise_or(image_eroded,app,image_eroded);
+  superior_half_mask(Rect(0, 0, image_width, image_height/2)) = 255;
+  image_without_red_areas.copyTo(image_eroded_only_sup_half,superior_half_mask);
+  bitwise_or(image_eroded,image_eroded_only_sup_half,image_eroded);
   Dilation(image_eroded, image_dilated);
-  masked_red_small_area = image_dilated;
+  image_without_red_areas = image_dilated;
 
   IplImage tmp1=img_masked_red_blue;
   IplImage* output = &tmp1;
 
-  IplImage tmp=masked_red_small_area;
+  IplImage tmp=image_without_red_areas;
   IplImage* img = &tmp;
 
   // Conversion of the original image into grayscale
@@ -617,14 +615,14 @@ cv::Mat tinyRedFiltering(cv::Mat &image_masked_red) {
     tinyRedCountours = tinyRedCountours->h_next;
   }
 
-  Mat masked_red_small_area;
-  image_masked_red.copyTo(masked_red_small_area,mask);
+  Mat image_without_red_areas;
+  image_masked_red.copyTo(image_without_red_areas,mask);
 
   cvReleaseImage(&localImgGrayScale);
   free(tinyRedCountours);
   cvClearMemStorage(tinyRedFilterStorage);
   cvReleaseMemStorage(&tinyRedFilterStorage);
-  return masked_red_small_area;
+  return image_without_red_areas;
 }
 
 void Erosion(Mat in, Mat &out)
