@@ -1,0 +1,95 @@
+================== SECTION 1: terminator commands =================
+
+rosdep install camera_calibration
+rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.108 image:=/camera/image_raw camera:=/camera
+--> calibrazione della fotocamera
+
+rosrun topic_tools throttle messages /camera/image_raw 5.0 
+advertised as /camera/image_raw_throttle --> temporizzare ros topic image
+
+
+Scrivere contemporaneamente su tutti terminali e su tutti quelli che verranno aperti(terminator):
+CMD 1:  cd SERL_Project/ROS/devel/; . setup.bash
+
+Terminale 1 
+caricare il bash da devel (CMD1)
+avviare roscore
+
+Terminale 2 (Old camera) 
+caricare il bash da devel
+cd src/usb_camera/launch
+roslaunch usb_camera.launch
+
+Terminale 3
+caricare il bash da devel (CMD1)
+rosrun spot_finder spot_finder_node
+
+Terminale 4 (ueye cam)
+caricare il bash da devel (CMD1)
+cd ~/SERL_Project/ROS/src/ueye_cam/launch
+roslaunch debug.launch 
+
+================== SECTION 1.1: terminator commands for new workspace =================
+
+Scrivere contemporaneamente su tutti terminali e su tutti quelli che verranno aperti(terminator):
+CMD 1:  cd ArrowFinder/devel/; . setup.bash
+CMD 2: cd ..
+
+Terminale 1 
+caricare il bash da devel (CMD1)
+avviare roscore
+
+Terminale 2
+caricare il bash da devel (CMD1)
+rosrun arrow_finder arrow_finder_node
+
+Terminale 3 (ueye cam)
+caricare il bash da devel (CMD1)
+cd ~/ArrowFinder/src/ueye_cam/launch
+roslaunch debug.launch 
+
+
+================== SECTION 2: deamon =================
+Prima di andare sul terminale 4 è necessario, avviare il daemon della camera (solo se non è già attivo:  esempio --> un plug a caldo --> verificare con programmino uEye di default):
+Lo posso runnare da qualsiasi posizione:
+sudo /etc/init.d/ueyeusbdrc start (il comando iniziale permetteva di scegliere tra usb p eth: la nostra camera è usb)!
+
+================== SECTION 3: useful links =================
+https://www.opencv-srf.com/2011/09/object-detection-tracking-using-contours.html
+ueye-linux-readme-49200_EN.html --> file per installazione software ueye cam
+
+
+================== SECTION 4: CPU consuming =================
+CPU consuming della vecchia camera runnando il nodo usb_camera.launch (quello creato ad hoc):
+Tasks: 309 total,   1 running, 242 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  4,9 us,  0,5 sy,  0,0 ni, 94,6 id,  0,0 wa,  0,0 hi,  0,0 si,  0,0 st
+KiB Mem :  8119204 total,  4081232 free,  2188572 used,  1849400 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.  5525672 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                              
+24505 serl      20   0  986516  79432  51544 S  38,5  1,0   0:08.00 usb_camera_node  <-------------------------                    
+ 1609 serl      20   0 4175352 369076  96184 S   6,0  4,5   6:09.16 gnome-shell                          
+ 1988 serl      20   0  736916  75444  37736 S   4,0  0,9   0:52.88 x-terminal-emul                      
+ 1476 root      20   0  494368  99084  79256 S   1,7  1,2   3:33.95 Xorg                                 
+ 1164 root     -51   0       0      0      0 S   0,7  0,0   0:26.17 irq/126-nvidia                       
+ì 
+
+================== SECTION 5: Project configuration =================
+Passo 1: creazione di un ROS workspace --> http://wiki.ros.org/it/ROS/Tutorials/InstallingandConfiguringROSEnvironment
+	
+	$ mkdir -p ~/catkin_ws/src
+	$ cd ~/catkin_ws/src
+	$ catkin_init_workspace
+	$ cd ~/catkin_ws/
+	$ catkin_make
+	$ source devel/setup.bash
+
+Passo 2: creazione3 del package --> http://wiki.ros.org/it/ROS/Tutorials/CreatingPackage
+	Entro nella cartella src (cd ArrowFinder/src) 
+	$ catkin_create_pkg arrow_finder std_msgs roscpp
+Passo 3: compilazione dei package: entro nel ws (cartella dove ho chiamato catkin_init_workspace) e chiamo
+	$ catkin_make
+	$ source opt/ros/groovy/setup.bash
+Passo 4: copiate cartelle vecchie e modificato file CMakeList.txt e file package.xml in package
+
+
