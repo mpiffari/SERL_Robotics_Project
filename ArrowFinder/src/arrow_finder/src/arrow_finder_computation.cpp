@@ -114,8 +114,8 @@ int const max_kernel_size = 21;
 void Erosion(Mat in, Mat &out);
 void Dilation(Mat in, Mat &out);
 
-// Camera tilt 
-float cam_inclination = asin(2/3.5); 
+// Camera tilt
+float cam_inclination = asin(2/3.5);
 // Intrinsic parameters of the camera (focal and center position)
 float f_x = 463.713374;
 float f_y = 464.444408;
@@ -123,7 +123,7 @@ float c_x = 316.855629;
 float c_y = 255.988008;
 float h_cam = 0.310; // Height of the camera from the ground expressed in [m]
 float scale; // Scale factor used to detect deepness of the point
-  
+
 MatrixXf R_traslation(4,4); // Traslation of point acquired from ground position to camera height (see documentation)
 MatrixXf R_rot_theta(4,4); // Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
 MatrixXf R_rot_camera(4,4); // Rotation from the frame of the camera to the base ground (see documentation)
@@ -131,12 +131,12 @@ VectorXf U_cam(2); // Coordinates of the point in the image frame
 VectorXf X_camera_normalized(3); // Coordinates of the point in the normalized frame
 VectorXf X_camera(3); // Coordinates of the point in the camera frame
 VectorXf X_camera_augmented(4); // Useful for passage from 2D to 3D by adding "fictitious" third coordinate
-VectorXf X_World(4); 
+VectorXf X_World(4);
 
 //settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
 //trovo le arrows in diagonale
 ArrowFinder::ArrowFinder() {
-	
+
 }
 
 ArrowFinder::~ArrowFinder() {
@@ -152,13 +152,13 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
  	R_rot_theta   <<1,0,0,0,
 				    0,cos(cam_inclination),-sin(cam_inclination),0,
 				 	0,sin(cam_inclination),cos(cam_inclination),0,
-				 	0,0,0,1;	
+				 	0,0,0,1;
  	R_rot_camera   <<1,0,0,0,
 				    0,cos(M_PI/2),-sin(M_PI/2),0,
 				 	0,sin(M_PI/2),cos(M_PI/2),0,
-				 	0,0,0,1;	
+				 	0,0,0,1;
 
-  
+
 	list <composed_arrow_info> freccie;
 	Mat original_image_hsv;
 	Mat hsv_red, hsv_blue;
@@ -204,7 +204,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	cvtColor(image, original_image_hsv, CV_BGR2HSV);
 
 	// Filter of original image acquired using color threshold (red and blue one)
-	inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);	
+	inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);
 	inRange(original_image_hsv, Scalar(MinH_B, MinS_B, MinV_B), Scalar(MaxH_B, MaxS_B, MaxV_B), hsv_blue);
 
 	// "img_masked_red" and "img_masked_blue" will contain only the red and the blue part (with some tolerance) of the original image
@@ -214,24 +214,23 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	image.copyTo(img_masked_red_blue,original_image_hsv); // In "img_masked_red_blue" there will be red and blue parts, from image, matched together
 
 
-	// TODO: attivare if (da errore in compilazione su Erosion/Dilatation in createTrackbar)
-	/*if(showErosionTrackbar) {
+	if(showErosionTrackbar) {
 		namedWindow(erosionImageWindow, WINDOW_AUTOSIZE);
-		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", erosionImageWindow, &erosion_elem, max_elem,Erosion);
-		createTrackbar( "Kernel size:\n 2n +1", erosionImageWindow,&erosion_size, max_kernel_size,Erosion);
+		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", erosionImageWindow, &erosion_elem, max_elem); //,Erosion);
+		createTrackbar( "Kernel size:\n 2n +1", erosionImageWindow,&erosion_size, max_kernel_size); //,Erosion);
 	}
 	if(showDilatationTrackbar) {
 		namedWindow(dilatationImageWindow, WINDOW_AUTOSIZE);
-		moveWindow(dilatationImageWindow, src.cols, 0);
-		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", dilatationImageWindow,&dilation_elem, max_elem,Dilation);
-		createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size,Dilation);
-	}*/
+		//moveWindow(dilatationImageWindow, src.cols, 0);
+		createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", dilatationImageWindow,&dilation_elem, max_elem); //,Dilation);
+		createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size); //,Dilation);
+	}
 
 
 	// TODO: racchiudere in una funzione (red_hsv_dimension_filter() per esempio)
 
 	// Filter of tiny contour in image with red pixel
-    CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);  
+    CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);
 	CvSeq* tinyRedCountours;
 
 	// TODO: capire se è possibile evitare di continuare ad usare questa conversione da Mat a IplImage (https://stackoverflow.com/questions/5192578/opencv-iplimage)
@@ -246,14 +245,14 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     // Conversione da scala HSV a scala di grigi dell'immagine
     cvCvtColor(img6,imgGrayScale,CV_BGR2GRAY);
     cvFindContours(imgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
-    
+
     while(tinyRedCountours) {
     	if(cvContourArea(tinyRedCountours) < 3) {
     		cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
     	}
     	tinyRedCountours = tinyRedCountours->h_next;
     }
-    
+
 	Mat masked_red_small_area;
 	img_masked_red.copyTo(masked_red_small_area,mask);
 
@@ -265,7 +264,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     //Erode and dilatate
 	src = masked_red_small_area;
 	Erosion(src, erosion_dst);
-	
+
 	sup_msk(Rect(0, 0, image_width, image_height/2)) = 255;
 	masked_red_small_area.copyTo(app,sup_msk);
 	bitwise_or(erosion_dst,app,erosion_dst);
@@ -279,9 +278,9 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	IplImage* img = &tmp;
 
 	// Conversion of the original image into grayscale
-	imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1); 
+	imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1);
 	cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
-	
+
 
 	// Finding all contours in the image
 	cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
@@ -291,13 +290,13 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	//printf("%s\n","______________ciclo_____________" );
 	//bool flag=false;
 	CvSeq* contour_i=contour;
- 
+
 	//iterating through each contour
 	while(contour) {
 		//obtain a sequence of points of the countour, pointed by the variable 'countour'
 		//cout<<"PARAM: "<<cvContourPerimeter(contour)*(((float)PARAM)/1000)<<endl;
 		result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*/*(((float)PARAM)/1000)*/ 0.045, 0);
-		
+
 		/*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
 		if(area>maxArea) {
 			maxArea = area;
@@ -306,7 +305,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
 		//if there are 7 vertices  in the contour and the area of the triangle is more than 100 pixels
 		if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect) {
-		 
+
 				cvDrawContours(img3, result, cvScalar(0,0,0), cvScalar(0,0,0), 100, 2);
 			//cout<<"PARAM: "<<cvContourPerimeter(contour)*(((float)PARAM)/1000)<<endl;
 			//flag=true;
@@ -316,8 +315,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	             pt[i] = (CvPoint*)cvGetSeqElem(result, i);
 	             cvCircle(output, *pt[i], 5, cvScalar(0,0,255));
 	         }
-	         	
-	   
+
+
 	         //drawing lines around the heptagon
 	         cvLine(output, *pt[0], *pt[1], cvScalar(0,0,255),2);
 	         cvLine(output, *pt[1], *pt[2], cvScalar(0,0,255),2);
@@ -335,7 +334,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	        pair<CvPoint,float> r(CvPoint(centro_x,centro_y), cvContourArea(contour));
 	        centri_rettangoli.push_back(r);
 	    }
-	     
+
      	//printf("aerea %d, vertici %d\n",fabs(cvContourArea(result, CV_WHOLE_SEQ)), result->total);
 		//obtain the next contour
 		contour = contour->h_next;
@@ -344,11 +343,11 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 			std::cout<<"*******************AREA "<<fabs(cvContourArea(result, CV_WHOLE_SEQ))<<endl;
 
 		}*/
-		 
+
 	}
 
 
-	//TODO: spostare nel ciclo precedente 
+	//TODO: spostare nel ciclo precedente
 	list<pair<CvPoint,float>>::const_iterator iterator;
 	for (iterator = centri_rettangoli.begin(); iterator != centri_rettangoli.end(); ++iterator) {
 	   //cout <<"("<< (*iterator).first.x <<","<<(*iterator).first.y<<")"<<endl;
@@ -370,9 +369,9 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	tmp=img_masked_blue;
 	img = &tmp;
 
-	imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1); 
+	imgGrayScale = cvCreateImage(cvGetSize(img), 8, 1);
 	cvCvtColor(img,imgGrayScale,CV_BGR2GRAY);
-	
+
 	storage = cvCreateMemStorage(0);
 	cvFindContours(imgGrayScale, storage, &contour, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
@@ -383,13 +382,13 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	//flag=false;
 	contour_i=contour;
 
-	
-	
+
+
 	//iterating through each contour
 	while(contour) {
 		//obtain a sequence of points of the countour, pointed by the variable 'countour'
 		result = cvApproxPoly(contour, sizeof(CvContour), storage, CV_POLY_APPROX_DP, cvContourPerimeter(contour)*0.12, 0);
-		
+
 		/*area = fabs(cvContourArea(result, CV_WHOLE_SEQ));
 		if(area>maxArea) {
 			maxArea = area;
@@ -407,7 +406,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 			 pt[i] = (CvPoint*)cvGetSeqElem(result, i);
 			 cvCircle(output, *pt[i], 5, cvScalar(255,0,0));
 			}
-				
+
 
 			//drawing lines around the heptagon
 			cvLine(output, *pt[0], *pt[1], cvScalar(255,0,0),2);
@@ -420,7 +419,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	        int centro_y = moments.m01 / moments.m00;
 	        //cout<<"centro x: "<<centro_x<<" | centro y: "<<centro_y<<endl;
 
-	       
+
 			pair<CvPoint,float> rr(CvPoint(centro_x,centro_y), cvContourArea(contour));
 	        centri_triangoli.push_back(rr);
 
@@ -443,11 +442,11 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	//i è l'iteratore dei triangoli
 	//j è l'iteratore dei rettangoli
 	for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
-	   
-	    list<pair<CvPoint,float>>::const_iterator j; 
+
+	    list<pair<CvPoint,float>>::const_iterator j;
 		pair<CvPoint,float> min = (*(centri_rettangoli.begin()));
 		int min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
-		
+
 		//calcolo il rettangolo di distanza minima dal triangolo i
 		for (j = centri_rettangoli.begin(); j != centri_rettangoli.end(); ++j) {
 			//cout<<"#"<<sqrt((pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)))<<" < "<<min_value<<endl;
@@ -479,14 +478,14 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 		new_arrow.center.y = ((*i).center_rectangle.y + (*i).center_triangle.y) / 2;
 
 		coefficiente_angolare = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
-			
+
 		if(coefficiente_angolare>0) {
 			angolo_deg = atan(coefficiente_angolare)*180/M_PI;
-			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0) 
+			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
 				angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
 		} else {
 			angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
-			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0) 
+			if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
 				angolo_deg = atan(coefficiente_angolare)*180/M_PI;
 		}
 
@@ -496,13 +495,13 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 	}
 
 
-	//show the image in which identified shapes are marked   
+	//show the image in which identified shapes are marked
 	cvNamedWindow("Tracked");
 	cvShowImage("Tracked",output);
 
 	// Immagine acquisita da camera in rgb8
  	//imshow("Immagine acquisita",image);
-    
+
 
 
 	cvReleaseImage(&imgGrayScale);
@@ -534,7 +533,7 @@ const arrow_info* ArrowFinder::getBiggestArrow( list<arrow_info> arrow_list) {
 
 VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
 	U_cam << (*arrow).center.x,(*arrow).center.y;
-	
+
 	// ==== ALGORITMO RICONOSIMENTO DISTANZA ====
 	X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
 	//ssommo pi/2 per mettere l'asse delle z uscente dalla camera se fosse "dritta", cam_inclination è l'inclinazione rispetto al palo
@@ -549,7 +548,7 @@ VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
 
 /*
 void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
- 	
+
  	image_width = image_width;
 	image_heigth = image_height;
 
@@ -570,7 +569,7 @@ void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 
 		cvCircle(img3, max.centro_rettangolo, 5, cvScalar(0,255,0),5);
 		float coefficiente_angolare = -(float)(max.centro_rettangolo.y-max.centro_triangolo.y)/(float)((max.centro_rettangolo.x-max.centro_triangolo.x)+0.0000001);
-		
+
 		float angolo_deg;
 		if(coefficiente_angolare>0) {
 			angolo_deg = atan(coefficiente_angolare)*180/M_PI;
@@ -586,7 +585,7 @@ void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 		cout << "Centro rettangolo --> <x =" << max.centro_rettangolo.x << "; y = "<< max.centro_rettangolo.y <<">" <<endl;
 		cout<<"m= "<<coefficiente_angolare<<" tangente: "<<angolo_deg<<endl;
 		U_cam << max.centro_rettangolo.x,max.centro_rettangolo.y;
-	
+
 		// ==== ALGORITMO RICONOSIMENTO DISTANZA ====
 		X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
 		scale = h_cam/(0.82*X_camera_normalized[1] + 0.57);
@@ -599,7 +598,7 @@ void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 
 	}
 
-	//show the image in which identified shapes are marked   
+	//show the image in which identified shapes are marked
 	cvNamedWindow("Tracked");
 	cvShowImage("Tracked",output);
 
@@ -651,5 +650,3 @@ void Dilation(Mat in, Mat &out)
   dilate( in, out, element );
   imshow( "Dilation Demo", out);
 }
-
-
