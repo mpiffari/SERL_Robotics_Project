@@ -160,7 +160,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   0,0,0,1;
 
 
-  list <composed_arrow_info> freccie;
+  list <composed_arrow_info> arrows;
   Mat original_image_hsv;
   Mat hsv_red, hsv_blue;
   Mat img_masked_red, img_masked_blue, img_masked_red_blue;
@@ -174,8 +174,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
   IplImage* imgGrayScale;
 
-  list <pair<CvPoint,float>> centri_rettangoli;
-  list <pair<CvPoint,float>> centri_triangoli;
+  list <pair<CvPoint,float>> centers_and_areas_of_rect;
+  list <pair<CvPoint,float>> centers_and_areas_of_triang;
 
   if(showColorsThresholdTrackbar) {
     const char* RedThreshold = "HSV RED";
@@ -280,7 +280,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
       int center_x = moments.m10 / moments.m00;
       int center_y = moments.m01 / moments.m00;
       pair<CvPoint,float> center_and_area(CvPoint(center_x,center_y), cvContourArea(contour));
-      centri_rettangoli.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
+      centers_and_areas_of_rect.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
 
       cvCircle(output, center_and_area.first, 3, cvScalar(255,255,255),3);
       //std::cout <<"("<< center_and_area.first.x << "," << center_and_area.first.y <<")"<< endl;
@@ -334,7 +334,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
       int center_x = moments.m10 / moments.m00;
       int center_y = moments.m01 / moments.m00;
       pair<CvPoint,float> center_and_area(CvPoint(center_x,center_y), cvContourArea(contour));
-      centri_triangoli.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
+      centers_and_areas_of_triang.push_back(center_and_area); // Add the new center to the end of the all centers found in the image
 
       cvCircle(output, center_and_area.first, 3, cvScalar(255,0,255),3);
       //std::cout <<"("<< center_and_area.first.x << "," << center_and_rea.first.y <<")"<< endl;
@@ -342,81 +342,73 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
     contour = contour->h_next;
   }
 
-  //calcolo le freccie e la loro area
-  //i è l'iteratore dei triangoli
-  //j è l'iteratore dei rettangoli
+  // Creation of the arrows ( trinagle + rectangle). Here:
+  //  i is the iterator for trinagles
+  //  j is the iterator for rectangles
   list<pair<CvPoint,float>>::const_iterator i;
-  for (i = centri_triangoli.begin(); i != centri_triangoli.end(); ++i) {
+  for (i = centers_and_areas_of_triang.begin(); i != centers_and_areas_of_triang.end(); ++i) {
 
     list<pair<CvPoint,float>>::const_iterator j;
-    pair<CvPoint,float> min = (*(centri_rettangoli.begin()));
+    pair<CvPoint,float> min = (*(centers_and_areas_of_rect.begin()));
     int min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
 
-    //calcolo il rettangolo di distanza minima dal triangolo i
-    for (j = centri_rettangoli.begin(); j != centri_rettangoli.end(); ++j) {
-      //cout<<"#"<<sqrt((pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)))<<" < "<<min_value<<endl;
-      if(  sqrt(pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)) < min_value){
+    // Looking for rectangle with minimum distance from triangle i
+    for (j = centers_and_areas_of_rect.begin(); j != centers_and_areas_of_rect.end(); ++j) {
+      //cout<<"# "<< sqrt((pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2))) <<" < " << min_value <<endl;
+      if(sqrt(pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)) < min_value) {
         min = *j;
-        //cout<<"OK"<<endl;
         min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
+        //cout<<"OK"<<endl;
       }
     }
 
-    //filtro le freccie in base alla distanza tra il centro del triangolo e il centro del rettangolo
+    // Filter out noisy acquisitions using minimum distance thr between center of rectangle and center of triangle
     if(min_value < lower_dst_rect_triang){
       composed_arrow_info f;
       f.center_triangle = (*i).first;
       f.center_rectangle = min.first;
       f.area = (*i).second + min.second;
 
-      freccie.push_back(f);
+      arrows.push_back(f); // Add a new arrow
       cvLine(output, f.center_rectangle, f.center_triangle, cvScalar(180,55,69),2);
     }
   }
 
-  //compute the orientation of the arrows
+  // Compute the orientation of the arrows
   list <arrow_info> arrow_output;
-  float coefficiente_angolare, angolo_deg;
-  for (list<composed_arrow_info>::const_iterator i = freccie.begin(); i != freccie.end(); ++i) {
+  float angular_coeff, angle_deg;
+  for (list<composed_arrow_info>::const_iterator i = arrows.begin(); i != arrows.end(); ++i) {
     arrow_info new_arrow;
     new_arrow.center.x = ((*i).center_rectangle.x + (*i).center_triangle.x) / 2;
     new_arrow.center.y = ((*i).center_rectangle.y + (*i).center_triangle.y) / 2;
 
-    coefficiente_angolare = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
+    angular_coeff = -(float)((*i).center_rectangle.y-(*i).center_triangle.y)/(float)(((*i).center_rectangle.x-(*i).center_triangle.x)+0.0000001);
 
-    if(coefficiente_angolare>0) {
-      angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+    if(angular_coeff > 0) {
+      angle_deg = atan(angular_coeff)*180/M_PI;
       if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
-      angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+      angle_deg = atan(angular_coeff)*180/M_PI + 180;
     } else {
-      angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+      angle_deg = atan(angular_coeff)*180/M_PI + 180;
       if(((*i).center_rectangle.y-(*i).center_triangle.y)<=0)
-      angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+      angle_deg = atan(angular_coeff)*180/M_PI;
     }
 
-    new_arrow.orientation = angolo_deg;
+    new_arrow.orientation = angle_deg;
     new_arrow.area = (*i).area;
     arrow_output.push_back(new_arrow);
   }
 
-
-  //show the image in which identified shapes are marked
-  cvNamedWindow("Tracked");
-  cvShowImage("Tracked",output);
-
-  // Immagine acquisita da camera in rgb8
-  //imshow("Immagine acquisita",image);
-
-
+  // Show the image in which identified shapes are marked
+  cvNamedWindow("Result");
+  cvShowImage("Result",output);
 
   cvReleaseImage(&imgGrayScale);
   free(contour);
   cvClearMemStorage(storage);
   cvReleaseMemStorage(&storage);
-
   return arrow_output;
 }
-
 
 const arrow_info* ArrowFinder::getBiggestArrow( list<arrow_info> arrow_list) {
   const arrow_info* max = nullptr;
@@ -431,7 +423,7 @@ const arrow_info* ArrowFinder::getBiggestArrow( list<arrow_info> arrow_list) {
 
     cvCircle(img3, (*max).center, 5, cvScalar(0,255,0),5);
   }
-  cvShowImage("Immagine acquisita",img3);
+  cvShowImage("Acquired image",img3);
   cv::waitKey(30);
   return max;
 }
@@ -458,10 +450,10 @@ image_width = image_width;
 image_heigth = image_height;
 
 //filtro sulla freccia di area maggiore
-if(freccie.size() != 0) {
-list<arrow_info>::const_iterator f = freccie.begin();
+if(arrows.size() != 0) {
+list<arrow_info>::const_iterator f = arrows.begin();
 arrow_info max = *f;
-for (f; f != freccie.end(); ++f) {
+for (f; f != arrows.end(); ++f) {
 if(max.area < (*f).area)
 max = *f;
 //cout<<"Freccia trovata"<<endl;
@@ -473,22 +465,22 @@ max.centro_rettangolo.y = (max.centro_rettangolo.y + max.centro_triangolo.y) / 2
 
 
 cvCircle(img3, max.centro_rettangolo, 5, cvScalar(0,255,0),5);
-float coefficiente_angolare = -(float)(max.centro_rettangolo.y-max.centro_triangolo.y)/(float)((max.centro_rettangolo.x-max.centro_triangolo.x)+0.0000001);
+float angular_coeff = -(float)(max.centro_rettangolo.y-max.centro_triangolo.y)/(float)((max.centro_rettangolo.x-max.centro_triangolo.x)+0.0000001);
 
-float angolo_deg;
-if(coefficiente_angolare>0) {
-angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+float angle_deg;
+if(angular_coeff>0) {
+angle_deg = atan(angular_coeff)*180/M_PI;
 if((max.centro_rettangolo.y-max.centro_triangolo.y)<=0) {
-angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+angle_deg = atan(angular_coeff)*180/M_PI + 180;
 }
 } else {
-angolo_deg = atan(coefficiente_angolare)*180/M_PI + 180;
+angle_deg = atan(angular_coeff)*180/M_PI + 180;
 if((max.centro_rettangolo.y-max.centro_triangolo.y)<=0) {
-angolo_deg = atan(coefficiente_angolare)*180/M_PI;
+angle_deg = atan(angular_coeff)*180/M_PI;
 }
 }
 cout << "Centro rettangolo --> <x =" << max.centro_rettangolo.x << "; y = "<< max.centro_rettangolo.y <<">" <<endl;
-cout<<"m= "<<coefficiente_angolare<<" tangente: "<<angolo_deg<<endl;
+cout<<"m= "<<angular_coeff<<" tangente: "<<angle_deg<<endl;
 U_cam << max.centro_rettangolo.x,max.centro_rettangolo.y;
 
 // ==== ALGORITMO RICONOSIMENTO DISTANZA ====
