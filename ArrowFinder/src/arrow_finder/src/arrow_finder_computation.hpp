@@ -85,38 +85,40 @@ struct composed_arrow_info {
 };
 
 class ArrowFinder {
-	
-  public:
-  	
-  	
+	public:
+	    std::vector<cv::Point2f> output;	// Marker coordinates
+	    ArrowFinder();
+	    ~ArrowFinder();
 
-    std::vector<cv::Point2f> output;	// Marker coordinates
-    ArrowFinder();
-    ~ArrowFinder();
+	   // bool setup(const std::string &filename);
 
-   // bool setup(const std::string &filename);
+	    /*
+	    	return: true if we find an image
+	    */
+	    void setImage(cv::Mat original_image, int image_height, int image_width);
 
-    /*
-    	return: true if we find an image
-    */
-    void setImage(cv::Mat original_image, int image_height, int image_width);
+		/*
+		*	@return: a list containing all the arrows found into original_image
+		*/
+	    list<arrow_info> findArrows(cv::Mat image);
 
-	/*
-	*	@return: a list containing all the arrows found into original_image
-	*/
-    list<arrow_info> findArrows(cv::Mat image);
+	    /*
+	    * @return: the biggest arrow in the arrow_list
+	    */
+	    const arrow_info* getBiggestArrow( list<arrow_info> arrow_list);
 
-    /*
-    * @return: the biggest arrow in the arrow_list
-    */
-    const arrow_info* getBiggestArrow( list<arrow_info> arrow_list);
-
-    // Convert from image coordiantes to world coordinates
-    VectorXf worldCoordinates(const arrow_info* arrow);
+	    // Convert from image coordiantes to world coordinates
+	    VectorXf worldCoordinates(const arrow_info* arrow);
 
 
-    //TODO: result of computation will be pubblished with ROS throw a topic
-    //or keep indipendent from ROS
+	    //TODO: result of computation will be pubblished with ROS throw a topic
+	    //or keep indipendent from ROS
+
+	private:
+		Mat tinyRedFiltering(Mat &image_masked_red);
+		void Erosion(Mat in, Mat &out);
+		void Dilation(Mat in, Mat &out);
+
 };
 
 #endif

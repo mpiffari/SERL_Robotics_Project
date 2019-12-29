@@ -111,9 +111,7 @@ int dilation_size = 3; // Setting of dilation type [MORPH_RECT, MORPH_CROSS, MOR
 // Erosion and dilation tuning parameters
 int const max_elem = 2;
 int const max_kernel_size = 21;
-cv::Mat tinyRedFiltering(cv::Mat &image_masked_red);
-void Erosion(Mat in, Mat &out);
-void Dilation(Mat in, Mat &out);
+
 
 // Camera tilt
 float cam_inclination = asin(2/3.5);
@@ -521,63 +519,71 @@ j = j->h_next;
 }*/
 
 // Filter of tiny contour in image with red pixel
-cv::Mat tinyRedFiltering(cv::Mat &image_masked_red) {
-  CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);
-  CvSeq* tinyRedCountours;
-  IplImage* localImgGrayScale;
+Mat ArrowFinder::tinyRedFiltering(Mat &image_masked_red) {
+	CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);
+	CvSeq* tinyRedCountours;
+	IplImage* localImgGrayScale;
 
-  // TODO: capire se è possibile evitare di continuare ad usare questa conversione da Mat a IplImage (https://stackoverflow.com/questions/5192578/opencv-iplimage)
-  IplImage tmp6=image_masked_red;
-  IplImage* img6 = &tmp6;
-  Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
-  mask(Rect(0, 0, image_width, image_height)) = 255;
-  IplImage mask_ipl=mask;
-  IplImage* mask_ipl2 = &mask_ipl;
+	// TODO: capire se è possibile evitare di continuare ad usare questa conversione da Mat a IplImage (https://stackoverflow.com/questions/5192578/opencv-iplimage)
+	IplImage tmp6=image_masked_red;
+	IplImage* img6 = &tmp6;
+	Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
+	mask(Rect(0, 0, image_width, image_height)) = 255;
+	IplImage mask_ipl=mask;
+	IplImage* mask_ipl2 = &mask_ipl;
 
-  localImgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1);
-  // Conversione da scala HSV a scala di grigi dell'immagine
-  cvCvtColor(img6,localImgGrayScale,CV_BGR2GRAY);
-  cvFindContours(localImgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+	localImgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1);
+	// Conversione da scala HSV a scala di grigi dell'immagine
+	cvCvtColor(img6,localImgGrayScale,CV_BGR2GRAY);
+	cvFindContours(localImgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
-  while(tinyRedCountours) {
-    if(cvContourArea(tinyRedCountours) < 3) {
-      cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
-    }
-    tinyRedCountours = tinyRedCountours->h_next;
-  }
+	while(tinyRedCountours) {
+		if(cvContourArea(tinyRedCountours) < 3)
+			cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
+		tinyRedCountours = tinyRedCountours->h_next;
+	}
 
-  Mat image_without_red_areas;
-  image_masked_red.copyTo(image_without_red_areas,mask);
+	Mat image_without_red_areas;
+	image_masked_red.copyTo(image_without_red_areas,mask);
 
-  cvReleaseImage(&localImgGrayScale);
-  free(tinyRedCountours);
-  cvClearMemStorage(tinyRedFilterStorage);
-  cvReleaseMemStorage(&tinyRedFilterStorage);
-  return image_without_red_areas;
+	cvReleaseImage(&localImgGrayScale);
+	free(tinyRedCountours);
+	cvClearMemStorage(tinyRedFilterStorage);
+	cvReleaseMemStorage(&tinyRedFilterStorage);
+	
+	return image_without_red_areas;
 }
 
-void Erosion(Mat in, Mat &out)
-{
-  int erosion_type = 0;
-  if( erosion_elem == 0 ){ erosion_type = MORPH_RECT; }
-  else if( erosion_elem == 1 ){ erosion_type = MORPH_CROSS; }
-  else if( erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
-  Mat element = getStructuringElement( erosion_type,
-    Size( 2*erosion_size + 1, 2*erosion_size+1 ),
-    Point( erosion_size, erosion_size ) );
-    erode( in, out, element );
-    //imshow( "Erosion Demo", out );
-  }
+void ArrowFinder::Erosion(Mat in, Mat &out) {
+	int erosion_type = 0;
 
-  void Dilation(Mat in, Mat &out)
-  {
-    int dilation_type = 0;
-    if( dilation_elem == 0 ){ dilation_type = MORPH_RECT; }
-    else if( dilation_elem == 1 ){ dilation_type = MORPH_CROSS; }
-    else if( dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
-    Mat element = getStructuringElement( dilation_type,
-      Size( 2*dilation_size + 1, 2*dilation_size+1 ),
-      Point( dilation_size, dilation_size ) );
-      dilate( in, out, element );
-      //imshow( "Dilation Demo", out);
-    }
+	if( erosion_elem == 0 )
+		erosion_type = MORPH_RECT; 
+	else if(erosion_elem == 1)
+		erosion_type = MORPH_CROSS;
+	else if(erosion_elem == 2)
+		erosion_type = MORPH_ELLIPSE;
+	
+	Mat element = getStructuringElement(erosion_type,
+				Size(2*erosion_size + 1, 2*erosion_size+1),
+				Point(erosion_size, erosion_size));
+				erode(in, out, element);
+    //imshow( "Erosion Demo", out );
+}
+
+void ArrowFinder::Dilation(Mat in, Mat &out) {
+	int dilation_type = 0;
+	
+	if( dilation_elem == 0 ) 
+		ilation_type = MORPH_RECT;
+	else if(dilation_elem == 1)
+		dilation_type = MORPH_CROSS;
+	else if(dilation_elem == 2)
+		dilation_type = MORPH_ELLIPSE;
+
+	Mat element = getStructuringElement(dilation_type,
+				Size(2*dilation_size + 1, 2*dilation_size+1),
+				Point(dilation_size, dilation_size));
+				dilate(in, out, element);
+	//imshow( "Dilation Demo", out);
+}
