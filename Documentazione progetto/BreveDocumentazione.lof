@@ -7,11 +7,12 @@
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Camera utilizzata successivamente\relax }}{5}{figure.caption.6}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces RBG vs HSV\relax }}{7}{figure.caption.7}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Erosione e dilatazione\relax }}{8}{figure.caption.8}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Schema concettuale delle diverse coordinate\relax }}{11}{figure.caption.8}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Posizione del world frame\relax }}{12}{figure.caption.9}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Descrizione del problema\relax }}{13}{figure.caption.10}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Descrizione dell'ultima trasformazione\relax }}{13}{figure.caption.11}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Problema inverso\relax }}{14}{figure.caption.12}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Piano del pavimento nel camera frame\relax }}{15}{figure.caption.13}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Schema concettuale delle diverse coordinate\relax }}{11}{figure.caption.9}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Posizione del world frame\relax }}{12}{figure.caption.10}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Descrizione del problema\relax }}{13}{figure.caption.11}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Descrizione dell'ultima trasformazione\relax }}{13}{figure.caption.12}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Problema inverso\relax }}{14}{figure.caption.13}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Piano del pavimento nel camera frame\relax }}{15}{figure.caption.14}
