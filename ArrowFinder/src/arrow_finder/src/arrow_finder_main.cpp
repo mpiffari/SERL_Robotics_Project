@@ -38,18 +38,16 @@ void infoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg) {
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
 	sensor_msgs::Image img_msg = *msg;
   	try {
-		list<arrow_info> pippo = finder.findArrows(cv_bridge::toCvShare(msg, "bgr8")->image);
-		const arrow_info* oo = finder.getBiggestArrow(pippo);
-		if(oo != nullptr){
-			VectorXf x(4);
-			x = finder.worldCoordinates(oo);
-			cout<<"Coordinate World: \n"<<x<<endl;
-		}
- 
-
+			list<arrow_info> arrows = finder.findArrows(cv_bridge::toCvShare(msg, "bgr8")->image);
+			const arrow_info* biggestArrow = finder.getBiggestArrow(arrows);
+			if(biggestArrow != nullptr){
+				VectorXf x(4);
+				x = finder.worldCoordinates(biggestArrow);
+				cout<<"Coordinate World: \n"<<x<<endl;
+			}
   	} catch (cv_bridge::Exception& e) {
     	ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-  	}  
+  	}
 }
 
 int main(int argc, char **argv)

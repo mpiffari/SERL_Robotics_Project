@@ -128,14 +128,14 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
   if(showErosionTrackbar) {
     namedWindow(erosionImageWindow, WINDOW_AUTOSIZE);
-    createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", erosionImageWindow, &erosion_elem, max_elem); //,Erosion);
-    createTrackbar( "Kernel size:\n 2n +1", erosionImageWindow,&erosion_size, max_kernel_size); //,Erosion);
+    createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", erosionImageWindow, &erosion_elem, max_elem); //, Erosion);
+    createTrackbar( "Kernel size:\n 2n +1", erosionImageWindow, &erosion_size, max_kernel_size); //, Erosion);
   }
   if(showDilatationTrackbar) {
     namedWindow(dilatationImageWindow, WINDOW_AUTOSIZE);
     //moveWindow(dilatationImageWindow, src.cols, 0);
-    createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", dilatationImageWindow,&dilation_elem, max_elem); //,Dilation);
-    createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow,&dilation_size, max_kernel_size); //,Dilation);
+    createTrackbar( "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse", dilatationImageWindow, &dilation_elem, max_elem); //, Dilation);
+    createTrackbar( "Kernel size:\n 2n +1", dilatationImageWindow, &dilation_size, max_kernel_size); //, Dilation);
   }
 
   Mat image_without_red_areas = tinyRedFiltering(img_masked_red);
@@ -391,12 +391,12 @@ void ArrowFinder::Erosion(Mat in, Mat &out) {
 	int erosion_type = 0;
 
 	if( erosion_elem == 0 )
-		erosion_type = MORPH_RECT; 
+		erosion_type = MORPH_RECT;
 	else if(erosion_elem == 1)
 		erosion_type = MORPH_CROSS;
 	else if(erosion_elem == 2)
 		erosion_type = MORPH_ELLIPSE;
-	
+
 	Mat element = getStructuringElement(erosion_type,
 				Size(2*erosion_size + 1, 2*erosion_size+1),
 				Point(erosion_size, erosion_size));
@@ -406,9 +406,9 @@ void ArrowFinder::Erosion(Mat in, Mat &out) {
 
 void ArrowFinder::Dilation(Mat in, Mat &out) {
 	int dilation_type = 0;
-	
-	if( dilation_elem == 0 ) 
-		ilation_type = MORPH_RECT;
+
+	if( dilation_elem == 0 )
+		dilation_type = MORPH_RECT;
 	else if(dilation_elem == 1)
 		dilation_type = MORPH_CROSS;
 	else if(dilation_elem == 2)
@@ -423,7 +423,7 @@ void ArrowFinder::Dilation(Mat in, Mat &out) {
 
 
 
-//TODO: remove 
+//TODO: remove
 /*
 void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
 

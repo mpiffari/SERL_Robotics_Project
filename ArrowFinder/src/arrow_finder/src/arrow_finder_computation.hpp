@@ -64,37 +64,15 @@
 
 //Parameters used to filter out noisily points in the original image
 //[pixel^2] Lower threshold useful to reduce the presence of undesired figure
-#define lower_area_rect         50 
+#define lower_area_rect         50
 #define lower_area_triang       5
 #define lower_dst_rect_triang   50 //[pixel] Lower threshold used to recognize when a square and a triangular makes an arrow
-//Erosion and dilation parameters definition
-#define erosion_elem  0
-#define dilation_elem 0
-#define erosion_size  1 //Setting of erosion type MORPH_RECT
-#define dilation_size 3	//Setting of dilation type MORPH_RECT
+
 //Erosion and dilation tuning parameters
 #define max_elem 		2
 #define max_kernel_size 21
-//Red mask CSV threshold
-#define MinH_R	0 
-#define MaxH_R 	10 
-#define MinS_R	70 
-#define MaxS_R	255 
-#define MinV_R	172 
-#define MaxV_R	255 
-// Blue mask CSV threshold
-#define MinH_B	100 
-#define MaxH_B	180 
-#define MinS_B	0 
-#define MaxS_B	255 
-#define MinV_B	65 
-#define MaxV_B	200 
 
-
-
-
-
-//immagini
+// Images
 #define DEBUG
 #ifdef DEBUG
 
@@ -103,8 +81,6 @@ IplImage* img3;
 
 #endif
 
-
-
 using namespace Eigen;
 using namespace std;
 using namespace cv;
@@ -112,25 +88,47 @@ using namespace cv;
 struct arrow_info {
 	CvPoint center;  	// Computed center of the arrow
 	float orientation;	// Orientation in degrees
-	float area; 
+	float area;
 };
 
 struct composed_arrow_info {
     CvPoint center_triangle;
     CvPoint center_rectangle;
-	float area; 
+	float area;
 };
 
 class ArrowFinder {
 	private:
-		MatrixXf R_traslation(4,4); 	//Traslation of point acquired from ground position to camera height (see documentation)
-		MatrixXf R_rot_theta(4,4);		//Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
-		MatrixXf R_rot_camera(4,4);		//Rotation from the frame of the camera to the base ground (see documentation)
-		VectorXf U_cam(2); 				//Coordinates of the point in the image frame
-		VectorXf X_camera_normalized(3);//Coordinates of the point in the normalized frame
-		VectorXf X_camera(3); 			//Coordinates of the point in the camera frame
-		VectorXf X_camera_augmented(4); //Useful for passage from 2D to 3D by adding "fictitious" third coordinate
-		VectorXf X_World(4);
+		// Red mask CSV threshold
+		int MinH_R = 0;
+		int MaxH_R = 10;
+		int MinS_R = 70;
+		int MaxS_R = 255;
+		int MinV_R = 172;
+		int MaxV_R = 255;
+
+		// Blue mask CSV threshold
+		int MinH_B = 100;
+		int MaxH_B = 180;
+		int MinS_B = 0;
+		int MaxS_B = 255;
+		int MinV_B = 65;
+		int MaxV_B = 200;
+
+		//Erosion and dilation parameters definition
+		int erosion_elem = 0;
+		int dilation_elem = 0;
+		int erosion_size = 1; //Setting of erosion type MORPH_RECT
+		int dilation_size = 3;	//Setting of dilation type MORPH_RECT
+
+		MatrixXf R_traslation = MatrixXf(4,4); 	//Traslation of point acquired from ground position to camera height (see documentation)
+		MatrixXf R_rot_theta = MatrixXf(4,4);		//Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
+		MatrixXf R_rot_camera = MatrixXf(4,4);		//Rotation from the frame of the camera to the base ground (see documentation)
+		VectorXf U_cam = VectorXf(2); 				//Coordinates of the point in the image frame
+		VectorXf X_camera_normalized = VectorXf(3);//Coordinates of the point in the normalized frame
+		VectorXf X_camera = VectorXf(3); 			//Coordinates of the point in the camera frame
+		VectorXf X_camera_augmented = VectorXf(4); //Useful for passage from 2D to 3D by adding "fictitious" third coordinate
+		VectorXf X_World = VectorXf(4);
 
 		const char* nameMainImageWindow	  = "Field Of View";
 		const char* erosionImageWindow 	  = "Erosion demo";
@@ -187,11 +185,8 @@ class ArrowFinder {
 		*	Filter of tiny contour in image with red pixel
 		*/
 		Mat tinyRedFiltering(Mat &image_masked_red);
-
 		void Erosion(Mat in, Mat &out);
-		
 		void Dilation(Mat in, Mat &out);
-
 };
 
 #endif
