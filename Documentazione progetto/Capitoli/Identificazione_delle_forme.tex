@@ -14,13 +14,11 @@ Si è reso necessario effettuare un tuning del parametro \textsl{double epsilon}
 La funzione di cui sopra restituisce quindi una lista di poligoni ognuno dei quali è descritto da una lista di vertici.
 Il passo successivo è stato cercare nella lista dei poligoni un elemento che avesse 4 lati nel caso di un rettangolo e 3 in quello di un triangolo:
 
-\begin{lstlisting}[language=c]
-IF (result->total >= 3  && result->total <= 3 && 
-fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang)
+\begin{lstlisting}
+	if(result->total >= 3  && result->total <= 3 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_triang)
 \end{lstlisting}
-\begin{lstlisting}[language=c]
-IF(result->total >= 4  && result->total <= 6 && 
-fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect)
+\begin{lstlisting}
+	if(result->total >= 4  && result->total <= 6 && fabs(cvContourArea(result, CV_WHOLE_SEQ))>lower_area_rect)
 \end{lstlisting}
 
 Sempre per via sperimentale è stato possibile scoprire che vincolando il poligono che approssima il quadrilatero cercato ad avere tra i 4 e i 6 lati, la probabilità di riconoscere correttamente un rettangolo aumentava.Per il triangolo questo non si è reso necessario vista la buona probabilità di successo nella ricerca vincolata a 3 lati.

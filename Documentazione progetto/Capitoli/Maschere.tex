@@ -26,9 +26,11 @@ foto maschera
 Le maschere sono fondamentali nel processo di object detection tramite la libreria OpenCV.
 Queste ultime sono immagini binarie(bianco e nero) e sono utilizzate da tutte le funzione di identificazione dei contorni e interpolazione di punti presenti in OpenCV.
 La seguente linea di codice,
-\begin{lstlisting}[language=c]
-inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);
+
+\begin{lstlisting}
+	inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);
 \end{lstlisting}
+
 permette di identificare tutti gli oggetti di colore rosso e di salvarli nella Matrice \textit{hsv\_red}.
 \section{Erosione e dilatazione}
 L'erosione e la dilatazione sono tecniche note allo stato dell'arte attuale utili per rimuovere rumore da una immagine.
