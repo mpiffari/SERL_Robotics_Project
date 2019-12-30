@@ -3,21 +3,22 @@
 \contentsline {section}{\numberline {1.1}SAL - Stato avanzamento lavori}{1}{section.1.1}
 \contentsline {chapter}{\numberline {2}Camera}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}Scelta della camera}{5}{section.2.1}
-\contentsline {section}{\numberline {2.2}Vericale o orizzontale?}{6}{section.2.2}
-\contentsline {section}{\numberline {2.3}Come ottenere le immagini dalla camera?}{6}{section.2.3}
-\contentsline {section}{\numberline {2.4}CPU consumption}{6}{section.2.4}
-\contentsline {section}{\numberline {2.5}Installazione}{6}{section.2.5}
-\contentsline {chapter}{\numberline {3}Gestione delle maschere}{7}{chapter.3}
-\contentsline {section}{\numberline {3.1}HSV}{7}{section.3.1}
-\contentsline {section}{\numberline {3.2}Frecce o cerchi?}{7}{section.3.2}
-\contentsline {section}{\numberline {3.3}Maschere}{8}{section.3.3}
-\contentsline {section}{\numberline {3.4}Erosione e dilatazione}{8}{section.3.4}
-\contentsline {chapter}{\numberline {4}Identificazione delle forme}{9}{chapter.4}
-\contentsline {section}{\numberline {4.1}Definizione del problema}{9}{section.4.1}
-\contentsline {section}{\numberline {4.2}Interpolazione}{9}{section.4.2}
-\contentsline {chapter}{\numberline {5}Dalle pixel coordinates alle world coordinates}{11}{chapter.5}
-\contentsline {section}{\numberline {5.1}Definizione del problema}{11}{section.5.1}
-\contentsline {section}{\numberline {5.2}Da wolrd coordinates to camera coordinates}{12}{section.5.2}
-\contentsline {section}{\numberline {5.3}Da camera coordinates a film coordinates}{13}{section.5.3}
-\contentsline {section}{\numberline {5.4}Da film coordinates a pixel coordinates}{13}{section.5.4}
-\contentsline {section}{\numberline {5.5}Problema al rovescio}{14}{section.5.5}
+\contentsline {section}{\numberline {2.2}Come ottenere le immagini dalla camera?}{6}{section.2.2}
+\contentsline {section}{\numberline {2.3}CPU consumption}{6}{section.2.3}
+\contentsline {section}{\numberline {2.4}Posizionamento camera}{6}{section.2.4}
+\contentsline {section}{\numberline {2.5}Calibrazione}{6}{section.2.5}
+\contentsline {chapter}{\numberline {3}Gestione delle maschere}{9}{chapter.3}
+\contentsline {section}{\numberline {3.1}HSV}{9}{section.3.1}
+\contentsline {section}{\numberline {3.2}Frecce o cerchi?}{9}{section.3.2}
+\contentsline {section}{\numberline {3.3}Maschere}{10}{section.3.3}
+\contentsline {section}{\numberline {3.4}Erosione e dilatazione}{10}{section.3.4}
+\contentsline {chapter}{\numberline {4}Identificazione delle forme}{11}{chapter.4}
+\contentsline {section}{\numberline {4.1}Definizione del problema}{11}{section.4.1}
+\contentsline {section}{\numberline {4.2}Interpolazione}{11}{section.4.2}
+\contentsline {chapter}{\numberline {5}Dalle pixel coordinates alle world coordinates}{13}{chapter.5}
+\contentsline {section}{\numberline {5.1}Definizione del problema}{13}{section.5.1}
+\contentsline {section}{\numberline {5.2}Da world coordinates to camera coordinates}{14}{section.5.2}
+\contentsline {section}{\numberline {5.3}Da camera coordinates a film coordinates}{15}{section.5.3}
+\contentsline {section}{\numberline {5.4}Da film coordinates a pixel coordinates}{15}{section.5.4}
+\contentsline {section}{\numberline {5.5}Problema al rovescio}{16}{section.5.5}
+\contentsline {chapter}{\numberline {6}Matrici di rotazione}{19}{chapter.6}

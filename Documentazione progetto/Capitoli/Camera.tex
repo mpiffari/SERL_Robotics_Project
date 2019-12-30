@@ -42,3 +42,67 @@ Un fattore importante nella scelta della camera è l'elevato tempo di utilizzo d
 
 Durante i test e gli esperimenti svolti in laboratorio la videocamera è stata legata ad un palo metallico e fissata con un angolo di inclinazione rispetto ad esso di circa 35 gradi; l'altezza dal pavimento è, inoltre, di circa 83.5 cm
 
+\section{Calibrazione}
+La fase di calibrazione della camera permette di ricavare (alcuni o tutti) i parametri che permettono al modello \textit{pin-hole} di poter essere utilizzato per proiettare punti da coordinate mondo a coordinate camera. 
+
+In inglese la calibrazione della camera, ovvero il ricavare i parametri intrinseci e/o estrinseci, si chiama \textit{Camera resectioning} in quando il concetto di Camera Calibration si può riferire anche al problema della calibrazione fotometrica del sistema.
+
+Una telecamera è infatti generalmente modellata mediante il modello proiettivo centrale pinhole camera (o foro stenopeico). Tale modello è definito da due famiglie di parametri:
+
+\begin{itemize}
+	\item Parametri intrinseci (da tre a cinque): descrivono la telecamera indipendentemente dalla sua posizione nello spazio.
+	\item Parametri estrinseci (sei): descrivono la posizione della telecamera nello spazio indipendentemente dalle sue caratteristiche interne.
+\end{itemize}
+
+Nel nostro caso specifico, per ottenere questi parametri di interesse, abbiamo sfruttato la forte interconnessione che la camera \textit{IDS} offre con l'ambiente ROS: infatti, installando uno specifico pacchetto software tramite il comando 
+
+\begin{lstlisting}
+	rosdep install camera_calibration
+\end{lstlisting}
+
+che permette di ottenere un insieme di pacchetti software scritti in \textit{Python}, i quali permettono di ottenere tutti i parametri di interesse.
+
+Nello specifico, il comando da eseguire tramite il terminale è il seguente:
+
+\begin{lstlisting}
+	rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.108 image:=/camera/image_raw camera:=/camera
+\end{lstlisting}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Immagini/Calibration.png}
+	\caption{Interfaccia grafica durante la calibrazione}
+	\label{fig:calibrationInterface}
+\end{figure}
+
+Questi invece sono gli esiti forniti in uscita dal processo di calibrazione:
+
+\begin{lstlisting}
+	width
+	640
+	
+	height
+	480
+	
+	[narrow_stereo]
+	
+	camera matrix
+	575.407063 0.000000 392.952424
+	0.000000 572.733663 256.805741
+	0.000000 0.000000 1.000000
+	
+	distortion
+	-0.310832 0.140048 -0.005256 -0.007508 0.000000
+	
+	rectification
+	1.000000 0.000000 0.000000
+	0.000000 1.000000 0.000000
+	0.000000 0.000000 1.000000
+	
+	projection
+	517.612549 0.000000 400.977651 0.000000
+	0.000000 540.829285 256.819184 0.000000
+	0.000000 0.000000 1.000000 0.000000
+\end{lstlisting}
+
+

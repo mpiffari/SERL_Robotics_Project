@@ -1,0 +1,3 @@
+[submodule "ArrowFinder/src/ueye_cam"]
+	path = ArrowFinder/src/ueye_cam
+	url = ../../anqixu/ueye_cam
