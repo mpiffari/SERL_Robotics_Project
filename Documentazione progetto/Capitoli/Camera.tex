@@ -1,36 +1,44 @@
 \section{Scelta della camera}
-Inizialmente si è scelta come camera \textit{SpotLight Pro Webcam}, una webcam già utilizzata in un progetto precedente \textit{Trust} (fig. ~\ref{fig:TrustCam}).
+Il progetto, allo stato iniziale, prevedeva di andare ad utilizzare la camera \textit{SpotLight Pro Webcam} (fig. ~\ref{fig:TrustCam}), webcam già utilizzata in un progetto precedente, da cui abbiamo preso spunto per partire.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.3\textwidth]{Immagini/TrustCam.jpg}
-	\caption{Camera utilizzata inizialmente}
+	\includegraphics[width=0.25\textwidth]{Immagini/TrustCam.jpg}
+	\caption{Camera utilizzata nello stato iniziale del progetto}
 	\label{fig:TrustCam}
 \end{figure}
-È stato però notato che, questa camera, non era in grado di dare sufficienti garanzie di funzionamento stabile in alcune delle più comuni condizioni luminose.
 
-Si è deciso quindi di passare ad una camera di tipo industriale, in grado di fornire delle prestazioni più stabili e affidabili. 
-La scelta è ricaduta sulla camera della casa produttrice \textit{IDS (Imaging Development System)}: si tratta del modello \textit{UI-1221LE-C-HQ} equipaggiata con la lente \textit{BM2420} della casa \textit{Lensagon}.
+È stato però notato che, utilizzando questa camera, non si era in grado di dare sufficienti garanzie di funzionamento stabile in alcune delle più comuni condizioni luminose e ambientali: infatti era alta la variabilità del comportamento della camera al variare delle condizioni luminose, il chè rendeva molto instabile il riconoscimento delle frecce.
+
+Si è deciso quindi di passare ad una camera di tipo industriale, in grado di fornire delle prestazioni più stabili e affidabili.
+
+La scelta è ricaduta sulla camera della casa produttrice \textit{IDS (Imaging Development System)}: si tratta del modello \textit{UI-1221LE-C-HQ} equipaggiata con la lente \textit{BM2420} prodotta dalla \textit{Lensagon} (\href{https://www.lensation.de/product/BM2420/}{lens datasheet}).
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth]{Immagini/camera-usb2-ueye-le-rev2-boardlevel-m12-1.jpg}
-	\caption{Camera utilizzata successivamente}
-	\label{fig:Cam}
+	\caption{Camera utilizzata nello step successivo}
+	\label{fig:UeyeCam}
 \end{figure}
 
-La camera in Fig.\ref{fig:Cam} ha un'otturatore globale che permette di acquisire tutta l'immagine istantaneamente e non in modo progressivo come la camera  \textit{SpotLight Pro Webcam}
+La camera in Fig.\ref{fig:UeyeCam} ha un'otturatore globale che permette di acquisire tutta l'immagine istantaneamente e non in modo progressivo come la camera  \textit{SpotLight Pro Webcam}.
 
-
-
-\section{Vericale o orizzontale?}
-TODO che vuol dire?
 \section{Come ottenere le immagini dalla camera?}
-Per ottenere le immagini dalla camera è stato necessario iscriversi presso il sito web della casa produttrice e scaricare i driver necessari all'installazione.
-La videocamera ha diverse opzioni di acquisizione tra cui anche una grandezza dell'immagine diversa dal classico 480x640 ma per ragioni di semplicità si è scelto di lasciare invariate le impostazioni di default.
+Per ottenere le immagini dalla camera è stato necessario iscriversi presso il sito web della casa produttrice e scaricare i driver necessari all'installazione e al funzionamento (\href{https://en.ids-imaging.com/manuals-ueye-software.html}{software}).
+
+La videocamera ha diverse opzioni di acquisizione tra cui anche una grandezza dell'immagine diversa dal classico 640x480 pixel ma, per ragioni di semplicità, si è scelto di lasciare invariate le impostazioni di default.
+
+In ogni caso è molto semplice verificare lo stato di funzionamento della camera stessa: è sufficiente, una volta scaricati e installati i software proprietari della casa produttrice, andare ad aprire il software \textit{uEyeDemo} e modificare le impostazioni in base alle proprie necessità.
+
+E' necessario sottolineare come, per essere in grado di ottenere le immagini dalla camera, sia importante assicurarsi che \textit{l'ueye daemon} sia in funzione: esso parte automaticamente dal momento in cui si avvia il PC con la camera già connessa. Nel caso in cui essa venga connessa a caldo è necessario andare ad avviare il \textit{daemon} utilizzando questo comando da terminale, che mette in evidenza come si tratti di un comando per camera usb (nel caso si andasse a lavorare con camera ethernet, servirebbe andare a selezionare la giusta opzione, proposta a terminale):
+
+\begin{quotation}
+	\textsl{sudo /etc/init.d/ueyeusbdrc start}
+\end{quotation}
+
 
 \section{CPU consumption}
 Un fattore importante nella scelta della camera è l'elevato tempo di utilizzo della CPU da parte della camera \textit{UI-1221LE-C-HQ}. In contrasto, la camera inizialmente scelta vantava un consumo di CPU nettamente inferiore e quindi che più si potrebbe adattare all'installazione su dispositivi mobili e con bassa potenza di calcolo.
 
-\section{Installazione}
+\section{Posizionamento camera}
 
-Durante i test e gli esperimenti svolti in laboratorio la videocamera è stata legata ad un palo metallico e fissata con un angolo di inclinazione rispetto ad esso di circa 35 gradi; l'altezza dal pavimento era, inoltre, di 83.5 cm
+Durante i test e gli esperimenti svolti in laboratorio la videocamera è stata legata ad un palo metallico e fissata con un angolo di inclinazione rispetto ad esso di circa 35 gradi; l'altezza dal pavimento è, inoltre, di circa 83.5 cm
 
