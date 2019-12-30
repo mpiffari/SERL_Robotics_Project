@@ -4,17 +4,19 @@
 \BOOKMARK [1][-]{section.2.1}{Scelta della camera}{chapter.2}% 4
 \BOOKMARK [1][-]{section.2.2}{Vericale o orizzontale?}{chapter.2}% 5
 \BOOKMARK [1][-]{section.2.3}{Come ottenere le immagini dalla camera?}{chapter.2}% 6
-\BOOKMARK [0][-]{chapter.3}{Gestione delle maschere}{}% 7
-\BOOKMARK [1][-]{section.3.1}{HSV}{chapter.3}% 8
-\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi?}{chapter.3}% 9
-\BOOKMARK [1][-]{section.3.3}{Maschere}{chapter.3}% 10
-\BOOKMARK [1][-]{section.3.4}{Erosione e dilatazione}{chapter.3}% 11
-\BOOKMARK [0][-]{chapter.4}{Identificazione delle forme}{}% 12
-\BOOKMARK [1][-]{section.4.1}{Definizione del problema}{chapter.4}% 13
-\BOOKMARK [1][-]{section.4.2}{Interpolazione}{chapter.4}% 14
-\BOOKMARK [0][-]{chapter.5}{Dalle pixel coordinates alle world coordinates}{}% 15
-\BOOKMARK [1][-]{section.5.1}{Definizione del problema}{chapter.5}% 16
-\BOOKMARK [1][-]{section.5.2}{Da wolrd coordinates to camera coordinates}{chapter.5}% 17
-\BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 18
-\BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 19
-\BOOKMARK [1][-]{section.5.5}{Problema al rovescio}{chapter.5}% 20
+\BOOKMARK [1][-]{section.2.4}{CPU consumption}{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.5}{Installazione}{chapter.2}% 8
+\BOOKMARK [0][-]{chapter.3}{Gestione delle maschere}{}% 9
+\BOOKMARK [1][-]{section.3.1}{HSV}{chapter.3}% 10
+\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi?}{chapter.3}% 11
+\BOOKMARK [1][-]{section.3.3}{Maschere}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.4}{Erosione e dilatazione}{chapter.3}% 13
+\BOOKMARK [0][-]{chapter.4}{Identificazione delle forme}{}% 14
+\BOOKMARK [1][-]{section.4.1}{Definizione del problema}{chapter.4}% 15
+\BOOKMARK [1][-]{section.4.2}{Interpolazione}{chapter.4}% 16
+\BOOKMARK [0][-]{chapter.5}{Dalle pixel coordinates alle world coordinates}{}% 17
+\BOOKMARK [1][-]{section.5.1}{Definizione del problema}{chapter.5}% 18
+\BOOKMARK [1][-]{section.5.2}{Da wolrd coordinates to camera coordinates}{chapter.5}% 19
+\BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 20
+\BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 21
+\BOOKMARK [1][-]{section.5.5}{Problema al rovescio}{chapter.5}% 22
