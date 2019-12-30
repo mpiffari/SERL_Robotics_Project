@@ -73,13 +73,9 @@
 #define max_kernel_size 21
 
 // Images
-#define DEBUG
-#ifdef DEBUG
-
 IplImage img2;
 IplImage* img3;
 
-#endif
 
 using namespace Eigen;
 using namespace std;
@@ -153,7 +149,7 @@ class ArrowFinder {
 
 	public:
 	    std::vector<cv::Point2f> output;	// Marker coordinates
-	    ArrowFinder(int,int);
+	    ArrowFinder(int height = 640, int width = 480);
 	    ~ArrowFinder();
 
 	   // bool setup(const std::string &filename);

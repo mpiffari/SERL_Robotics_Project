@@ -52,7 +52,7 @@
 
 //settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
 //trovo le arrows in diagonale
-ArrowFinder::ArrowFinder(int height = 640, int width = 480):image_height(height),image_width(width) {}
+ArrowFinder::ArrowFinder(int height, int width):image_height(height),image_width(width) {}
 
 ArrowFinder::~ArrowFinder() {}
 
