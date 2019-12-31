@@ -72,10 +72,6 @@
 #define max_elem 		2
 #define max_kernel_size 21
 
-// Images
-IplImage img2;
-IplImage* img3;
-
 
 using namespace Eigen;
 using namespace std;
@@ -95,6 +91,9 @@ struct composed_arrow_info {
 
 class ArrowFinder {
 	private:
+		// Images
+		IplImage img2;
+		IplImage* img3;
 		// Red mask CSV threshold
 		int MinH_R = 0;
 		int MaxH_R = 10;
