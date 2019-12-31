@@ -17,12 +17,12 @@
 \BOOKMARK [1][-]{section.4.2}{Interpolazione}{chapter.4}% 17
 \BOOKMARK [0][-]{chapter.5}{Dalle pixel coordinates alle world coordinates}{}% 18
 \BOOKMARK [1][-]{section.5.1}{Definizione del problema}{chapter.5}% 19
-\BOOKMARK [1][-]{section.5.2}{Da world coordinates to camera coordinates}{chapter.5}% 20
+\BOOKMARK [1][-]{section.5.2}{Da world coordinates a camera coordinates}{chapter.5}% 20
 \BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 21
 \BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 22
 \BOOKMARK [1][-]{section.5.5}{Problema al rovescio}{chapter.5}% 23
 \BOOKMARK [0][-]{chapter.6}{Matrici di rotazione}{}% 24
 \BOOKMARK [0][-]{chapter.7}{Successive modifiche}{}% 25
-\BOOKMARK [1][-]{section.7.1}{modificare l'altezza della camera}{chapter.7}% 26
-\BOOKMARK [1][-]{section.7.2}{modificare l'inclinazione della camera}{chapter.7}% 27
-\BOOKMARK [1][-]{section.7.3}{modificare il terreno su cui si trova il robot}{chapter.7}% 28
+\BOOKMARK [1][-]{section.7.1}{Modifica dell'altezza della camera}{chapter.7}% 26
+\BOOKMARK [1][-]{section.7.2}{Modifica dell'inclinazione della camera}{chapter.7}% 27
+\BOOKMARK [1][-]{section.7.3}{Modifica del terreno su cui si trova il robot}{chapter.7}% 28

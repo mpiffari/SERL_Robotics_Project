@@ -1,18 +1,18 @@
-\section{modificare l'altezza della camera}
-Per effettuare modifiche all'altezza della camera è sufficiente modificare il parametro $h_{cam}$ della matrice :
+\section{Modifica dell'altezza della camera}
+Per effettuare modifiche all'altezza della camera è sufficiente modificare il parametro $h_{cam}$ della matrice:
 \begin{equation}
-	R_{traslazione}\\
+	R_{traslazione} = \\
 	\begin{pmatrix}
 	1 & 0 & 0 & 0 \\
 	0 & 1 & 0 & 0 \\
-	0 & 0 & 1 & h_{cam}\\
+	0 & 0 & 1 & -h_{cam}\\
 	0 & 0 & 0 & 1 \\
 	\end{pmatrix}
 \end{equation}
-Nel caso di modifiche anche rispetto ad altri assi quali U e V sarà sufficiente modificare i valori dei primi due elementi della quarta colonna che rappresentano rispettivamente l'asse U e l'asse V.
+Nel caso di modifiche anche rispetto ad altri assi quali U e V sarà sufficiente modificare i valori dei primi due elementi della quarta colonna che rappresentano rispettivamente traslazioni lungo l'asse U e l'asse V.
 
-\section{modificare l'inclinazione della camera}
-Per effettuare eventuali modifiche alla inclinazione della camera, sempre ammesso che il piano Z si voglia uscente dal piano della camera allora sara sufficiente modificare il parametro $\alpha$
+\section{Modifica dell'inclinazione della camera}
+Per effettuare eventuali modifiche alla inclinazione della camera, sempre ammesso che il piano Z si voglia uscente dal piano della camera, sarà allora sufficiente modificare il parametro $\alpha$, che appare nella matrice seguente:
 \begin{equation}
 	R_{rotazione} =
 	\begin{pmatrix}
@@ -23,16 +23,17 @@ Per effettuare eventuali modifiche alla inclinazione della camera, sempre ammess
 	\end{pmatrix}
 \end{equation}
 
-\section{modificare il terreno su cui si trova il robot}
-Nel caso in cui il robot su cui è montata la camera dovvesse essere utilizzato in ambienti diversi da quelli di un laboratorio in cui sono assenti salite, discese o dislivelli allora sarà necessario modificar il piano su cui la freccia giace.
-Per fare ciò sarà necessario ricalcolare il piano su cu giace la freccia $ax+by+cz+d=0$ e ricalcolare il fattore di scala
+\section{Modifica del terreno su cui si trova il robot}
+Nel caso in cui il robot su cui è montata la camera dovvesse essere utilizzato in ambienti diversi da quelli di un laboratorio in cui sono assenti salite, discese o dislivelli allora sarà necessario modificare il piano su cui la freccia giace.
+
+Per fare ciò sarà necessario ricalcolare il piano su cui si trova la freccia $ax+by+cz+d=0$ e ricalcolare il fattore di scala
 \begin{equation}
 	\begin{split}
 	s = \dfrac{-d}{aX'+bY'+c}	
 	\end{split}
 \end{equation}
 
-Si note come, se il robot dovesse viaggiare su un pavimento senza variazioni lungo l'asse U allora il fattore di scala è definito come:
+Si nota come, se il robot dovesse viaggiare su un pavimento senza variazioni lungo l'asse U, allora il fattore di scala sarebbe definito come:
 $$
 s = \abs{\dfrac{h_{cam}
 	}{-sin(\dfrac{\pi}{2}+\alpha)*Y'+ cos(\dfrac{\pi}{2}+\alpha)}}

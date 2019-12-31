@@ -1,4 +1,4 @@
-\select@language {english}
+\babel@toc {english}{}
 \contentsline {chapter}{\numberline {1}Stato dell'arte}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}SAL - Stato avanzamento lavori}{1}{section.1.1}
 \contentsline {chapter}{\numberline {2}Camera}{5}{chapter.2}
@@ -16,14 +16,14 @@
 \contentsline {chapter}{\numberline {4}Identificazione delle forme}{11}{chapter.4}
 \contentsline {section}{\numberline {4.1}Definizione del problema}{11}{section.4.1}
 \contentsline {section}{\numberline {4.2}Interpolazione}{11}{section.4.2}
-\contentsline {chapter}{\numberline {5}Dalle pixel coordinates alle world coordinates}{13}{chapter.5}
+\contentsline {chapter}{\numberline {5}Dalle \textit {pixel coordinates} alle \textit {world coordinates}}{13}{chapter.5}
 \contentsline {section}{\numberline {5.1}Definizione del problema}{13}{section.5.1}
-\contentsline {section}{\numberline {5.2}Da world coordinates to camera coordinates}{14}{section.5.2}
-\contentsline {section}{\numberline {5.3}Da camera coordinates a film coordinates}{15}{section.5.3}
-\contentsline {section}{\numberline {5.4}Da film coordinates a pixel coordinates}{15}{section.5.4}
+\contentsline {section}{\numberline {5.2}Da \textit {world coordinates} a \textit {camera coordinates}}{14}{section.5.2}
+\contentsline {section}{\numberline {5.3}Da \textit {camera coordinates} a \textit {film coordinates}}{15}{section.5.3}
+\contentsline {section}{\numberline {5.4}Da \textit {film coordinates} a \textit {pixel coordinates}}{16}{section.5.4}
 \contentsline {section}{\numberline {5.5}Problema al rovescio}{16}{section.5.5}
 \contentsline {chapter}{\numberline {6}Matrici di rotazione}{19}{chapter.6}
 \contentsline {chapter}{\numberline {7}Successive modifiche}{21}{chapter.7}
-\contentsline {section}{\numberline {7.1}modificare l'altezza della camera}{21}{section.7.1}
-\contentsline {section}{\numberline {7.2}modificare l'inclinazione della camera}{21}{section.7.2}
-\contentsline {section}{\numberline {7.3}modificare il terreno su cui si trova il robot}{21}{section.7.3}
+\contentsline {section}{\numberline {7.1}Modifica dell'altezza della camera}{21}{section.7.1}
+\contentsline {section}{\numberline {7.2}Modifica dell'inclinazione della camera}{21}{section.7.2}
+\contentsline {section}{\numberline {7.3}Modifica del terreno su cui si trova il robot}{21}{section.7.3}

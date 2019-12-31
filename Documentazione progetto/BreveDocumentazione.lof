@@ -1,4 +1,4 @@
-\select@language {english}
+\babel@toc {english}{}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {1.1}{\ignorespaces Struttura del codice\relax }}{2}{figure.caption.3}
 \contentsline {figure}{\numberline {1.2}{\ignorespaces Base robotica addetta alla movimentazione\relax }}{2}{figure.caption.4}
@@ -12,11 +12,12 @@
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Erosione e dilatazione\relax }}{10}{figure.caption.10}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Schema concettuale delle diverse coordinate\relax }}{13}{figure.caption.11}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Schema concettuale delle diverse coordinate in gioco\relax }}{13}{figure.caption.11}
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Posizione del world frame\relax }}{14}{figure.caption.12}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Descrizione del problema\relax }}{15}{figure.caption.13}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Descrizione dell'ultima trasformazione\relax }}{15}{figure.caption.14}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Problema inverso\relax }}{16}{figure.caption.15}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Piano del pavimento nel camera frame\relax }}{17}{figure.caption.16}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Posizionamento della camera su supporto metallico\relax }}{15}{figure.caption.13}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Descrizione del problema\relax }}{15}{figure.caption.14}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Descrizione dell'ultima trasformazione\relax }}{16}{figure.caption.15}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Problema inverso\relax }}{16}{figure.caption.16}
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Piano del pavimento nel camera frame\relax }}{17}{figure.caption.17}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
