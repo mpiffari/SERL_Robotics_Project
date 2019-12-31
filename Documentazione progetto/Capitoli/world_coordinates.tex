@@ -24,22 +24,6 @@ Si analizzeranno ora le singole trasformazioni che permetteranno alla fine di ot
 \end{figure}
 
 Partendo da un sistema di riferimento solidale al robot e posto all'altezza del pavimento, che identifichiamo come sistema globale, è possibile definire una matrice di rototraslazione per ottenere il sistema di riferimento solidale al centro della camera.
-TODO
-\begin{equation*}
-R_{worldcam} = R_{traslazione} * R_{rotazione} =\\
-\begin{pmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & 1 & h_{cam} \\
-0 & 0 & 0 & 1 \\
-\end{pmatrix} *
-\begin{pmatrix}
-cos(\dfrac{\pi}{2}+\alpha) & -sin(\dfrac{\pi}{2}+\alpha) & 0 & 0 \\
-sin(\dfrac{\pi}{2}+\alpha) & cos(\dfrac{\pi}{2}+\alpha)& 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 \\
-\end{pmatrix}
-\end{equation*}
 
 \begin{equation*}
 R_{worldcam} = R_{traslazione} * R_{rotazione} =\\
