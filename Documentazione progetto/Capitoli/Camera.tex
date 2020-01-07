@@ -28,11 +28,11 @@ La videocamera ha diverse opzioni di acquisizione tra cui anche una grandezza de
 
 In ogni caso è molto semplice verificare lo stato di funzionamento della camera stessa: è sufficiente, una volta scaricati e installati i software proprietari della casa produttrice, andare ad aprire il software \textit{uEyeDemo} e modificare le impostazioni in base alle proprie necessità.
 
-E' necessario sottolineare come, per essere in grado di ottenere le immagini dalla camera, sia importante assicurarsi che \textit{l'ueye daemon} sia in funzione: esso parte automaticamente dal momento in cui si avvia il PC con la camera già connessa. Nel caso in cui essa venga connessa a caldo è necessario andare ad avviare il \textit{daemon} utilizzando questo comando da terminale, che mette in evidenza come si tratti di un comando per camera usb (nel caso si andasse a lavorare con camera ethernet, servirebbe andare a selezionare la giusta opzione, proposta a terminale):
+E' necessario sottolineare come, per essere in grado di ottenere le immagini dalla camera, sia importante assicurarsi che \textit{l'ueye daemon} sia in funzione: esso parte automaticamente dal momento in cui si avvia il PC con la camera già connessa. Nel caso in cui essa venga connessa a caldo è necessario andare ad avviare il \textit{daemon} utilizzando questo comando da terminale, che mette in evidenza come si tratti di un comando per camera usb (nel caso si andasse a lavorare con camera ethernet, servirebbe utilizzare ueyeethdrc):
 
-\begin{quotation}
-	\textsl{sudo /etc/init.d/ueyeusbdrc start}
-\end{quotation}
+\begin{lstlisting}
+	sudo /etc/init.d/ueyeusbdrc start
+\end{lstlisting}
 \section{Throttle}
 Durante la fase di test e verifica del codice si è scelto di utilizzare un throttle:
 esso non è altro che un topic predefinito di ROS il quale si occupa di prendere in input tutte le immagini provenienti dalla camera e regolare l'uscita in modo che l'output sia pubblicato con una frequenza minore dell' input; in questo modo si è ridotto sia il CPU consumption sia sia la variabilità dell'immagine in quanto le condizioni esterne sono soggette a rapidi ed imprevedibili cambiamenti.

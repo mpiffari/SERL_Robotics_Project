@@ -26,13 +26,13 @@ Si analizzeranno ora le singole trasformazioni che permetteranno alla fine di ot
 Partendo da un sistema di riferimento solidale al robot e posto all'altezza del pavimento, che identifichiamo come sistema globale, è possibile definire una matrice di rototraslazione per ottenere il sistema di riferimento solidale al centro della camera.
 
 \begin{equation*}
-R_{worldcam} = R_{traslazione} * R_{rotazione} =\\
+R_{worldcam} = R_{traslazione} \cdot R_{rotazione} =\\
 \begin{pmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 \\
 0 & 0 & 1 & h_{cam} \\
 0 & 0 & 0 & 1 \\
-\end{pmatrix} *
+\end{pmatrix} \cdot
 \begin{pmatrix}
 1 & 0 & 0 & 0 \\
 0 & cos(\dfrac{\pi}{2}+\alpha) & -sin(\dfrac{\pi}{2}+\alpha) & 0 \\
@@ -59,7 +59,7 @@ A questo punto è necessario effettuare un'altra rotazione di $\alpha$ gradi ris
 	\caption{Descrizione del problema}
 	\label{fig:perspective_projection}
 \end{figure}
-Nello schema in figura \ref{fig:perspective_projection}, \textit{f} rappresenta il fuoco della camera, parametro ottenibile attraverso una procedura di calibrazione.
+Nello schema in figura \ref{fig:perspective_projection}, \textit{f} rappresenta il fuoco della camera, parametro ottenibile attraverso la procedura di calibrazione.
 
 \section{Da \textit{film coordinates} a \textit{pixel coordinates}}
 
@@ -71,7 +71,7 @@ Nello schema in figura \ref{fig:perspective_projection}, \textit{f} rappresenta 
 \end{figure}
 In figura \ref{fig:intrinsic_parameters}, i termini $ O_{x}$ e $ O_{y} $ rappresentano i centri della camera e sono anch'essi ricavabili tramite la procedura di calibrazione della camera.
 
-\section{Problema al rovescio}
+\section{Problema inverso}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{Immagini/backward.png}
@@ -102,7 +102,7 @@ La seconda assunzione è, nella realtà dei fatti, un'ipotesi corretta e applica
 È quindi richiesto di calcolare l'equazione del pavimento nel camera frame:
 \begin{itemize}
 	\item $z = 0$ rappresenta l'equazione del piano se fosse nel world frame
-	\item $z \bullet R_{worldcam} = 0$ indica il piano così calcolato è la descrizione dal punto di vista matematico del pavimento dal punto di vista della camera
+	\item $z \cdot R_{worldcam} = 0$ indica il piano così calcolato è la descrizione dal punto di vista matematico del pavimento dal punto di vista della camera
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{Immagini/piano_camera.jpeg}
@@ -125,8 +125,8 @@ La seconda assunzione è, nella realtà dei fatti, un'ipotesi corretta e applica
 	che sono le coordinate normalizzate rispetto a Z.
 	\item Dunque, come ultimo passaggio si moltiplica tutto per il fattore di scala:
 		\begin{equation}
-		X=X' \bullet s\\
-		Y=Y' \bullet s\\
+		X=X' \cdot s\\
+		Y=Y' \cdot s\\
 		Z=S
 		\end{equation}
 \end{itemize}
@@ -140,7 +140,7 @@ V  \\
 W  \\
 1  \\
 \end{pmatrix}
-=R_{worldcam}^{-1}*
+=R_{worldcam}^{-1}\cdot
 \begin{pmatrix}
 X  \\
 Y  \\

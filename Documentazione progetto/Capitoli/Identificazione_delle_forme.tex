@@ -1,15 +1,15 @@
 \section{Definizione del problema}
-Il capitolo precedente ha mostrato come sia possibile ottenere dei contorni, delle figure data un' immagine a colori.
+Il capitolo precedente ha mostrato come sia possibile ottenere dei contorni delle figure da un'immagine a colori.
 È ora necessario identificare la forma di ciascuno di questi contorni riconoscendo così i vari quadrati e rettangoli presenti nell'immagine che avessero, una volta acquisiti dalla camera, il colore specificato. Come ultimo passaggio va svolto il controllo per verificare che esista o meno una freccia; quest'ultima altro non è che un triangolo e un rettangolo sufficientemente vicini fra di loro.
 
 \section{Interpolazione}
 Per approssimare il contorno ottenuto e filtrato attraverso le mask, come spiegato nel Capitolo 3, è necessario usare una funzione che approssima il contorno individuato con un altro poligono avente meno vertici così che la distanza tra di essi sia inferiore ad una certa soglia. Tale funzione è così definita nella libreria OpenCV:
 
-\begin{quotation}
-	\textsl{void approxPolyDP(InputArray curve, OutputArray approxCurve, double epsilon, bool closed)}
-\end{quotation}
+\begin{lstlisting}
+	void approxPolyDP(InputArray curve, OutputArray approxCurve, double epsilon, bool closed)
+\end{lstlisting}
 
-Si è reso necessario effettuare un tuning del parametro \textsl{double epsilon} in quanto, per frecce diverse, a distanza variabile e con orientazione non fissa sono stati individuati differenti valori ottimali. Il valore che più si adattava a tutti i casi presi in considerazione è stato ottenuto sperimentalmente e corrisponde a \textsl{double epsilon=0.045}.
+Si è reso necessario effettuare un tuning del parametro \textsl{epsilon} in quanto, per frecce diverse, a distanza variabile e con orientazione non fissa sono stati individuati differenti valori ottimali. Il valore che più si adattava a tutti i casi presi in considerazione è stato ottenuto sperimentalmente e corrisponde a \textsl{epsilon = 0.045}.
 
 La funzione di cui sopra restituisce quindi una lista di poligoni ognuno dei quali è descritto da una lista di vertici.
 Il passo successivo è stato cercare nella lista dei poligoni un elemento che avesse 4 lati nel caso di un rettangolo e 3 in quello di un triangolo:
@@ -27,9 +27,9 @@ Ottenuti ora tutti i triangoli e i rettangoli sufficientemente grandi nella figu
 \begin{itemize}
 	\item \textbf{} per ciascun rettangolo identificato, si calcola la distanza che intercorre tra esso e ogni triangolo riconosciuto. Per calcolare la distanza tra due figure è necessario:
 	\begin{itemize}
-		\item \textbf{}definire il centro del rettangolo, tramite funzioni della libreria OpenCV
-		\item \textbf{}ottenere il baricentro del triangolo
-		\item \textbf{}calcolare la distanza cartesiana tra i due punti appena individuati
+		\item \textbf{}definire il centro del rettangolo, tramite funzioni della libreria OpenCV;
+		\item \textbf{}ottenere il baricentro del triangolo;
+		\item \textbf{}calcolare la distanza cartesiana tra i due punti appena individuati.
 	\end{itemize}
 	\item \textbf{} si tiene in considerazione solamente la distanza minore calcolata.
 	\item \textbf{} si confronta suddetto valore con una soglia sperimentale; se questo valore è minore allora si può assumere che il triangolo e il quadrato presi in considerazione siano una freccia, altrimenti si scarta la coppia.

@@ -9,7 +9,7 @@
 \BOOKMARK [1][-]{section.2.6}{Calibrazione}{chapter.2}% 9
 \BOOKMARK [0][-]{chapter.3}{Gestione delle maschere}{}% 10
 \BOOKMARK [1][-]{section.3.1}{HSV}{chapter.3}% 11
-\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi?}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi ?}{chapter.3}% 12
 \BOOKMARK [1][-]{section.3.3}{Maschere}{chapter.3}% 13
 \BOOKMARK [1][-]{section.3.4}{Erosione e dilatazione}{chapter.3}% 14
 \BOOKMARK [0][-]{chapter.4}{Identificazione delle forme}{}% 15
@@ -20,7 +20,7 @@
 \BOOKMARK [1][-]{section.5.2}{Da world coordinates a camera coordinates}{chapter.5}% 20
 \BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 21
 \BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 22
-\BOOKMARK [1][-]{section.5.5}{Problema al rovescio}{chapter.5}% 23
+\BOOKMARK [1][-]{section.5.5}{Problema inverso}{chapter.5}% 23
 \BOOKMARK [0][-]{chapter.6}{Matrici di rotazione}{}% 24
 \BOOKMARK [0][-]{chapter.7}{Successive modifiche}{}% 25
 \BOOKMARK [1][-]{section.7.1}{Modifica dell'altezza della camera}{chapter.7}% 26

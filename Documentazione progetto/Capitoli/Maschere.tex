@@ -20,8 +20,8 @@ Potremmo pensare dunque, di andare a fondo del problema,cambiando gli intervalli
 
 Si può notare come, in Fig \ref{fig:RGB_&_HSV}, il colore rosso sia definito in un range ben chiaro di un solo valore (\textit{Hue}) mentre \textit{Saturation }and \textit{Value} servono solo a limitare ulteriormente la gamma di tonalità di rosso accettabili. 
 
-\section{Frecce o cerchi?}
-Nel progetto utilizzato come punto di partenza, si erano individuati cerchi di diversa grandezza per testare le funzionalità della libreria OpenCV nell' object detection.
+\section{Frecce o cerchi ?}
+Nel progetto utilizzato come punto di partenza, si erano individuati cerchi di diversa grandezza per testare le funzionalità della libreria OpenCV nell'object detection.
 
 Ovviamente l'utilizzo di cerchi limita di molto l'espressività del simbolo in quanto un cerchio non può, per sua natura identificare una direzione, men che meno un verso.
 Le frecce sono quindi la soluzione più naturale al problema di identificare con un simbolo una direzione ed un verso che poi, un eventuale robot mobile, potrà seguire.
@@ -33,13 +33,13 @@ foto maschera
 Le maschere sono fondamentali nel processo di object detection tramite la libreria OpenCV.
 
 Queste ultime sono immagini binarie (bianco e nero) e sono utilizzate da tutte le funzioni di identificazione dei contorni e interpolazione di punti presenti in OpenCV.
-La seguente linea di codice
+La seguente linea di codice permette di identificare tutti gli oggetti di colore rosso e di salvarli nella Matrice \textit{hsv\_red}.
 
 \begin{lstlisting}
 	inRange(original_image_hsv, Scalar(MinH_R, MinS_R, MinV_R), Scalar(MaxH_R, MaxS_R, MaxV_R), hsv_red);
 \end{lstlisting}
 
-permette di identificare tutti gli oggetti di colore rosso e di salvarli nella Matrice \textit{hsv\_red}.
+
 
 \section{Erosione e dilatazione}
 L'erosione e la dilatazione sono tecniche note allo stato dell'arte attuale utili per rimuovere rumore da una immagine.
