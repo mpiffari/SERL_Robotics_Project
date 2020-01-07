@@ -35,20 +35,20 @@ R_{worldcam} = R_{traslazione} \cdot R_{rotazione} =\\
 \end{pmatrix} \cdot
 \begin{pmatrix}
 1 & 0 & 0 & 0 \\
-0 & cos(\dfrac{\pi}{2}+\alpha) & -sin(\dfrac{\pi}{2}+\alpha) & 0 \\
-0 & sin(\dfrac{\pi}{2}+\alpha) & cos(\dfrac{\pi}{2}+\alpha) & 0 \\
+0 & cos(\dfrac{\pi}{2} + cam\_incl) & -sin(\dfrac{\pi}{2} + cam\_incl) & 0 \\
+0 & sin(cam\_incl + \dfrac{\pi}{2}) & cos(cam\_incl + \dfrac{\pi}{2}) & 0 \\
 0 & 0 & 0 & 1 \\
 \end{pmatrix}
 \end{equation*}
+\footnote{\textit{cam incl} corrisposnde, all'interno del codice, alla variabile \textit{cam inclination}}
 
 È stata effettuata una traslazione lungo l'asse W in quanto la camera è posta esattamente sopra l'origine del sistema $O_{UVW}$ ed una rotazione rispetto all'asse U di $ \dfrac{\pi}{2}$ in quanto, per convenzione, si associa all'asse delle Z la profondità nel frame solidale alla camera.
 
-A questo punto è necessario effettuare un'altra rotazione di $\alpha$ gradi rispetto all'asse X a seconda dell'inclinazione alla quale si sceglie di far lavorare la camera, come si vede in figura ~\ref{fig:cameraSupport}
+A questo punto è necessario effettuare un'altra rotazione di \textit{cam inclination} gradi rispetto all'asse X a seconda dell'inclinazione alla quale si sceglie di far lavorare la camera, come si vede in figura ~\ref{fig:cameraSupport}.
 
-TODO: aggiungere alpha all'immagine successiva.
 \begin{figure}
 	\centering
-	\includegraphics[width=0.3\textwidth]{Immagini/CameraSupport.png}
+	\includegraphics[width=0.5\textwidth]{Immagini/CameraSupport.jpg}
 	\caption{Posizionamento della camera su supporto metallico}
 	\label{fig:cameraSupport}
 \end{figure}

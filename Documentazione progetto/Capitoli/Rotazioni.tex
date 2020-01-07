@@ -13,10 +13,10 @@ R_traslation << 1,0,0,0,
 				0,0,1,-h_cam,
 				0,0,0,1;
 
-R_rot_theta  << 1,0,0,0,
-				0,cos(cam_inclination),-sin(cam_inclination),0,
-				0,sin(cam_inclination),cos(cam_inclination),0,
-				0,0,0,1;
+R_rot_cam_inclination  << 1,0,0,0,
+					      0,cos(cam_inclination),-sin(cam_inclination),0,
+						  0,sin(cam_inclination),cos(cam_inclination),0,
+						  0,0,0,1;
 
 R_rot_camera << 1,0,0,0,
 				0,cos(M_PI/2),-sin(M_PI/2),0,

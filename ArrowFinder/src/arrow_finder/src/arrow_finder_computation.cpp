@@ -62,7 +62,7 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   0,1,0,0,
   0,0,1,-h_cam,
   0,0,0,1;
-  R_rot_theta   <<1,0,0,0,
+  R_rot_cam_inclination   <<1,0,0,0,
   0,cos(cam_inclination),-sin(cam_inclination),0,
   0,sin(cam_inclination),cos(cam_inclination),0,
   0,0,0,1;
@@ -348,7 +348,7 @@ VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
 
   X_camera = X_camera_normalized * scale;
   X_camera_augmented << X_camera , 1;
-  X_World = (R_rot_camera * R_rot_theta * R_traslation).inverse() * X_camera_augmented;
+  X_World = (R_rot_camera * R_rot_cam_inclination * R_traslation).inverse() * X_camera_augmented;
   return X_World;
 }
 
@@ -469,7 +469,7 @@ X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
 scale = h_cam/(0.82*X_camera_normalized[1] + 0.57);
 X_camera = X_camera_normalized * scale;
 X_camera_augmented << X_camera , 1;
-X_World = (R_rot_camera * R_rot_theta * R_traslation).inverse() * X_camera_augmented;
+X_World = (R_rot_camera * R_rot_cam_inclination * R_traslation).inverse() * X_camera_augmented;
 
 cout<<"Coordinate World: \n*****\n"<<X_World<<"\n*****\n";
 
