@@ -1,3 +1,29 @@
-TODO:
-- installazione sw camera
-- info contenute nel file istruzioni.txt
+\begin{lstlisting}
+================== SECTION 1: terminator commands=================
+
+Scrivere contemporaneamente su tutti terminali e su tutti quelli che verranno aperti(terminator):
+CMD 1:  cd ArrowFinder/devel/; . setup.bash
+CMD 2: cd ..
+
+Terminale 1 
+caricare il bash da devel (CMD1)
+avviare roscore
+
+Terminale 2
+caricare il bash da devel (CMD1)
+rosrun arrow_finder arrow_finder_node
+
+Terminale 3 (ueye cam)
+caricare il bash da devel (CMD1)
+cd ~/ArrowFinder/src/ueye_cam/launch
+roslaunch debug.launch 
+
+Terminale 4 (throttle)
+rosrun topic_tools throttle messages /camera/image_raw 5.0 
+
+================== SECTION 2: deamon =================
+
+Prima di andare sul terminale 4 e necessario, avviare il daemon della camera (solo se non e gia attivo:  esempio:un plug a caldo, da verificare con il programma uEye).
+Lo posso runnare da qualsiasi posizione:
+sudo /etc/init.d/ueyeusbdrc start (il comando iniziale permetteva di scegliere tra usb e eth: la nostra camera e usb)!
+\end{lstlisting}
