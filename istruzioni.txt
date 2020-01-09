@@ -48,6 +48,8 @@ caricare il bash da devel (CMD1)
 cd ~/ArrowFinder/src/ueye_cam/launch
 roslaunch debug.launch 
 
+Terminale 4 (throttle)
+rosrun topic_tools throttle messages /camera/image_raw 5.0 
 
 ================== SECTION 2: deamon =================
 Prima di andare sul terminale 4 è necessario, avviare il daemon della camera (solo se non è già attivo:  esempio --> un plug a caldo --> verificare con programmino uEye di default):
@@ -85,11 +87,9 @@ Passo 1: creazione di un ROS workspace --> http://wiki.ros.org/it/ROS/Tutorials/
 	$ source devel/setup.bash
 
 Passo 2: creazione3 del package --> http://wiki.ros.org/it/ROS/Tutorials/CreatingPackage
+Passo 3: copiate cartelle vecchie e modificato file CMakeList.txt e file package.xml in package
+	
 	Entro nella cartella src (cd ArrowFinder/src) 
 	$ catkin_create_pkg arrow_finder std_msgs roscpp
-Passo 3: compilazione dei package: entro nel ws (cartella dove ho chiamato catkin_init_workspace) e chiamo
-	$ catkin_make
-	$ source opt/ros/groovy/setup.bash
-Passo 4: copiate cartelle vecchie e modificato file CMakeList.txt e file package.xml in package
 
 
