@@ -22,8 +22,9 @@
 \BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 22
 \BOOKMARK [1][-]{section.5.5}{Problema inverso}{chapter.5}% 23
 \BOOKMARK [0][-]{chapter.6}{Matrici di rotazione}{}% 24
-\BOOKMARK [0][-]{chapter.7}{Successive modifiche}{}% 25
-\BOOKMARK [1][-]{section.7.1}{Modifica dell'altezza della camera}{chapter.7}% 26
-\BOOKMARK [1][-]{section.7.2}{Modifica dell'inclinazione della camera}{chapter.7}% 27
-\BOOKMARK [1][-]{section.7.3}{Modifica del terreno su cui si trova il robot}{chapter.7}% 28
-\BOOKMARK [0][-]{chapter.8}{Indicazioni per l'utilizzo della libreria}{}% 29
+\BOOKMARK [0][-]{chapter.7}{Conclusioni}{}% 25
+\BOOKMARK [0][-]{chapter.8}{Successive modifiche}{}% 26
+\BOOKMARK [1][-]{section.8.1}{Modifica dell'altezza della camera}{chapter.8}% 27
+\BOOKMARK [1][-]{section.8.2}{Modifica dell'inclinazione della camera}{chapter.8}% 28
+\BOOKMARK [1][-]{section.8.3}{Modifica del terreno su cui si trova il robot}{chapter.8}% 29
+\BOOKMARK [0][-]{chapter.9}{Indicazioni per l'utilizzo della libreria}{}% 30

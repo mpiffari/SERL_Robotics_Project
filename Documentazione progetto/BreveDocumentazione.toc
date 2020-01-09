@@ -1,4 +1,4 @@
-\babel@toc {english}{}
+\select@language {english}
 \contentsline {chapter}{\numberline {1}Stato dell'arte}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}SAL - Stato avanzamento lavori}{1}{section.1.1}
 \contentsline {chapter}{\numberline {2}Camera}{5}{chapter.2}
@@ -23,8 +23,9 @@
 \contentsline {section}{\numberline {5.4}Da \textit {film coordinates} a \textit {pixel coordinates}}{16}{section.5.4}
 \contentsline {section}{\numberline {5.5}Problema inverso}{16}{section.5.5}
 \contentsline {chapter}{\numberline {6}Matrici di rotazione}{19}{chapter.6}
-\contentsline {chapter}{\numberline {7}Successive modifiche}{23}{chapter.7}
-\contentsline {section}{\numberline {7.1}Modifica dell'altezza della camera}{23}{section.7.1}
-\contentsline {section}{\numberline {7.2}Modifica dell'inclinazione della camera}{23}{section.7.2}
-\contentsline {section}{\numberline {7.3}Modifica del terreno su cui si trova il robot}{23}{section.7.3}
-\contentsline {chapter}{\numberline {8}Indicazioni per l'utilizzo della libreria}{25}{chapter.8}
+\contentsline {chapter}{\numberline {7}Conclusioni}{23}{chapter.7}
+\contentsline {chapter}{\numberline {8}Successive modifiche}{25}{chapter.8}
+\contentsline {section}{\numberline {8.1}Modifica dell'altezza della camera}{25}{section.8.1}
+\contentsline {section}{\numberline {8.2}Modifica dell'inclinazione della camera}{25}{section.8.2}
+\contentsline {section}{\numberline {8.3}Modifica del terreno su cui si trova il robot}{25}{section.8.3}
+\contentsline {chapter}{\numberline {9}Indicazioni per l'utilizzo della libreria}{27}{chapter.9}
