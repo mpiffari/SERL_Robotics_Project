@@ -60,7 +60,7 @@ A questo punto è necessario effettuare un'altra rotazione di \textit{cam inclin
 	\caption{Descrizione del problema}
 	\label{fig:perspective_projection}
 \end{figure}
-Nello schema in figura \ref{fig:perspective_projection}, \textit{f} rappresenta il fuoco della camera, parametro ottenibile attraverso la procedura di calibrazione.
+Nello schema in figura \ref{fig:perspective_projection}, \textit{f} rappresenta il fuoco della camera: si tratta di un parametro ottenibile attraverso la procedura di calibrazione, il quale può, come il centro della camera, essere scomposto in due componenti $f_x$ e $f_y$, utilizzati rispettivamente, per trasformazioni lungo l'asse $x$ e lungo l'asse $y$.
 
 \section{Da \textit{film coordinates} a \textit{pixel coordinates}}
 
@@ -93,7 +93,7 @@ y = v -O_{y}
 
 In questo modo sono quindi state ottenute le equazione del film coordinates. 
 
-È ora necessario ottenere le camera coordinates. Per fare ciò è necessario conoscere il valore di Z, cosa ottenibile in due modi:
+È ora necessario ottenere le camera coordinates. Per fare ciò è necessario conoscere il valore di Z (ovvero la profondità), la quale è ottenibile in due modi:
 \begin{itemize}
 	\item utilizzando una camera con sensore di profondità
 	\item assumendo che gli oggetti inquadrati dalla camera siano sempre posti su un piano di cui si conosce l'equazione.
@@ -119,8 +119,8 @@ La seconda assunzione è, nella realtà dei fatti, un'ipotesi corretta e applica
 	dove
 		\begin{equation}
 		\begin{split}
-		X'=\dfrac{x}{f}=\dfrac{X}{Z}\\
-		Y'=\dfrac{y}{f}=\dfrac{Y}{Z} \\
+		X'=\dfrac{x}{f_x}=\dfrac{X}{Z}\\
+		Y'=\dfrac{y}{f_y}=\dfrac{Y}{Z} \\
 		\end{split}
 		\end{equation}
 	che sono le coordinate normalizzate rispetto a Z.

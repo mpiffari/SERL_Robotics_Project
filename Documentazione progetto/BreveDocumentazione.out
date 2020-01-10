@@ -1,30 +1,31 @@
 \BOOKMARK [0][-]{chapter.1}{Stato dell'arte}{}% 1
-\BOOKMARK [1][-]{section.1.1}{SAL - Stato avanzamento lavori}{chapter.1}% 2
-\BOOKMARK [0][-]{chapter.2}{Camera}{}% 3
-\BOOKMARK [1][-]{section.2.1}{Scelta della camera}{chapter.2}% 4
-\BOOKMARK [1][-]{section.2.2}{Come ottenere le immagini dalla camera?}{chapter.2}% 5
-\BOOKMARK [1][-]{section.2.3}{Throttle}{chapter.2}% 6
-\BOOKMARK [1][-]{section.2.4}{CPU consumption}{chapter.2}% 7
-\BOOKMARK [1][-]{section.2.5}{Posizionamento camera}{chapter.2}% 8
-\BOOKMARK [1][-]{section.2.6}{Calibrazione}{chapter.2}% 9
-\BOOKMARK [0][-]{chapter.3}{Gestione delle maschere}{}% 10
-\BOOKMARK [1][-]{section.3.1}{HSV}{chapter.3}% 11
-\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi ?}{chapter.3}% 12
-\BOOKMARK [1][-]{section.3.3}{Maschere}{chapter.3}% 13
-\BOOKMARK [1][-]{section.3.4}{Erosione e dilatazione}{chapter.3}% 14
-\BOOKMARK [0][-]{chapter.4}{Identificazione delle forme}{}% 15
-\BOOKMARK [1][-]{section.4.1}{Definizione del problema}{chapter.4}% 16
-\BOOKMARK [1][-]{section.4.2}{Interpolazione}{chapter.4}% 17
-\BOOKMARK [0][-]{chapter.5}{Dalle pixel coordinates alle world coordinates}{}% 18
-\BOOKMARK [1][-]{section.5.1}{Definizione del problema}{chapter.5}% 19
-\BOOKMARK [1][-]{section.5.2}{Da world coordinates a camera coordinates}{chapter.5}% 20
-\BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 21
-\BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 22
-\BOOKMARK [1][-]{section.5.5}{Problema inverso}{chapter.5}% 23
-\BOOKMARK [0][-]{chapter.6}{Matrici di rotazione}{}% 24
-\BOOKMARK [0][-]{chapter.7}{Conclusioni}{}% 25
-\BOOKMARK [0][-]{chapter.8}{Successive modifiche}{}% 26
-\BOOKMARK [1][-]{section.8.1}{Modifica dell'altezza della camera}{chapter.8}% 27
-\BOOKMARK [1][-]{section.8.2}{Modifica dell'inclinazione della camera}{chapter.8}% 28
-\BOOKMARK [1][-]{section.8.3}{Modifica del terreno su cui si trova il robot}{chapter.8}% 29
-\BOOKMARK [0][-]{chapter.9}{Indicazioni per l'utilizzo della libreria}{}% 30
+\BOOKMARK [0][-]{chapter.2}{Camera}{}% 2
+\BOOKMARK [1][-]{section.2.1}{Scelta della camera}{chapter.2}% 3
+\BOOKMARK [1][-]{section.2.2}{Come ottenere le immagini dalla camera?}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.3}{Throttle}{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.4}{CPU consumption}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.5}{Posizionamento camera}{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.6}{Calibrazione}{chapter.2}% 8
+\BOOKMARK [0][-]{chapter.3}{Gestione delle maschere}{}% 9
+\BOOKMARK [1][-]{section.3.1}{HSV}{chapter.3}% 10
+\BOOKMARK [1][-]{section.3.2}{Frecce o cerchi ?}{chapter.3}% 11
+\BOOKMARK [1][-]{section.3.3}{Maschere}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.4}{Erosione e dilatazione}{chapter.3}% 13
+\BOOKMARK [0][-]{chapter.4}{Identificazione delle forme}{}% 14
+\BOOKMARK [1][-]{section.4.1}{Definizione del problema}{chapter.4}% 15
+\BOOKMARK [1][-]{section.4.2}{Interpolazione}{chapter.4}% 16
+\BOOKMARK [0][-]{chapter.5}{Dalle pixel coordinates alle world coordinates}{}% 17
+\BOOKMARK [1][-]{section.5.1}{Definizione del problema}{chapter.5}% 18
+\BOOKMARK [1][-]{section.5.2}{Da world coordinates a camera coordinates}{chapter.5}% 19
+\BOOKMARK [1][-]{section.5.3}{Da camera coordinates a film coordinates}{chapter.5}% 20
+\BOOKMARK [1][-]{section.5.4}{Da film coordinates a pixel coordinates}{chapter.5}% 21
+\BOOKMARK [1][-]{section.5.5}{Problema inverso}{chapter.5}% 22
+\BOOKMARK [0][-]{chapter.6}{Matrici di rotazione}{}% 23
+\BOOKMARK [0][-]{chapter.7}{Conclusioni}{}% 24
+\BOOKMARK [0][-]{chapter.8}{Successive modifiche}{}% 25
+\BOOKMARK [1][-]{section.8.1}{Modifica dell'altezza della camera}{chapter.8}% 26
+\BOOKMARK [1][-]{section.8.2}{Modifica dell'inclinazione della camera}{chapter.8}% 27
+\BOOKMARK [1][-]{section.8.3}{Modifica del terreno su cui si trova il robot}{chapter.8}% 28
+\BOOKMARK [0][-]{chapter.9}{Indicazioni per l'utilizzo della libreria}{}% 29
+\BOOKMARK [1][-]{section.9.1}{Installazione driver camera}{chapter.9}% 30
+\BOOKMARK [1][-]{section.9.2}{Avvio del codice}{chapter.9}% 31

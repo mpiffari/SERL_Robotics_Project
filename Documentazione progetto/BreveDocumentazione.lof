@@ -1,7 +1,7 @@
-\select@language {english}
+\babel@toc {english}{}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {1.1}{\ignorespaces Struttura del codice\relax }}{2}{figure.caption.3}
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Base robotica addetta alla movimentazione\relax }}{2}{figure.caption.4}
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Base robotica addetta alla movimentazione\relax }}{3}{figure.caption.4}
 \contentsline {figure}{\numberline {1.3}{\ignorespaces Base verticale sulla quale andare ad inserire la camera\relax }}{3}{figure.caption.5}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Camera utilizzata nello stato iniziale del progetto\relax }}{5}{figure.caption.6}
@@ -22,7 +22,8 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {6.1}{\ignorespaces Frames scelti\relax }}{20}{figure.caption.18}
 \contentsline {figure}{\numberline {6.2}{\ignorespaces Frame della camera\relax }}{21}{figure.caption.19}
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Ricapitolazione dei frames scelti\relax }}{22}{figure.caption.20}
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Visione d'insieme dei frames scelti all'interno dell'area di lavoro\relax }}{22}{figure.caption.20}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Esempio esplicativo del risultato finale dell'algoritmo\relax }}{23}{figure.caption.21}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
