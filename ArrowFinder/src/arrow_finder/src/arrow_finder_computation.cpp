@@ -50,11 +50,21 @@
 *******************************************************************************/
 #include "arrow_finder_computation.hpp"
 
-//settare altezza camera e ho settato il rettangolo  come un poligono a sei vertici così
-//trovo le arrows in diagonale
-ArrowFinder::ArrowFinder(int height, int width):image_height(height),image_width(width) {}
+ArrowFinder::ArrowFinder(float cam_inclination, float cam_height): cam_inclination(cam_inclination),h_cam(cam_height) {}
 
 ArrowFinder::~ArrowFinder() {}
+
+void ArrowFinder::setCameraIntrinsicParameters(float f_x, float f_y, float c_x, float c_y){
+	this->f_x = f_x;
+	this->f_y = f_y;
+	this->c_x = c_x;
+	this->c_y = c_y;
+}
+
+void ArrowFinder::setCameraPhysicalParameters(float cam_inclination, float cam_height){
+	this->cam_inclination = cam_inclination;
+	h_cam = cam_height;
+};
 
 list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
 
@@ -76,6 +86,8 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
   Mat original_image_hsv;
   Mat hsv_red, hsv_blue;
   Mat img_masked_red, img_masked_blue, img_masked_red_blue;
+  image_height = image.rows;
+  image_width = image.cols;
   Mat image_eroded = Mat::zeros(image_height, image_width, CV_8U);
   Mat image_dilated = Mat::zeros(image_height, image_width, CV_8U);
   Mat superior_half_mask = Mat::zeros(image_height, image_width, CV_8U); // Initialization as all zeros
@@ -268,7 +280,6 @@ list<arrow_info> ArrowFinder::findArrows(cv::Mat image) {
       if(sqrt(pow((*i).first.x-(*j).first.x,2) + pow((*i).first.y-(*j).first.y,2)) < min_value) {
         min = *j;
         min_value = sqrt(pow((*i).first.x-min.first.x,2) + pow((*i).first.y-min.first.y,2));
-        //cout<<"OK"<<endl;
       }
     }
 
@@ -341,162 +352,82 @@ const arrow_info* ArrowFinder::getBiggestArrow( list<arrow_info> arrow_list) {
 VectorXf ArrowFinder::worldCoordinates(const arrow_info* arrow){
   U_cam << (*arrow).center.x,(*arrow).center.y;
 
-  // ==== ALGORITMO RICONOSIMENTO DISTANZA ====
   X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
-  //ssommo pi/2 per mettere l'asse delle z uscente dalla camera se fosse "dritta", cam_inclination è l'inclinazione rispetto al palo
   scale = abs(h_cam/(-sin(cam_inclination + M_PI/2)*X_camera_normalized[1] + cos(cam_inclination + M_PI/2)));
-
   X_camera = X_camera_normalized * scale;
   X_camera_augmented << X_camera , 1;
   X_World = (R_rot_camera * R_rot_cam_inclination * R_traslation).inverse() * X_camera_augmented;
-  return X_World;
+  VectorXf coordinates_world = VectorXf(3);
+  coordinates_world << ((int) (X_World[0]*1000)) / 1000.0,
+  					   ((int) (X_World[1]*1000)) / 1000.0,
+  					   ((int) (X_World[2]*1000)) / 1000.0;
+  return coordinates_world;
 }
 
 Mat ArrowFinder::tinyRedFiltering(Mat &image_masked_red) {
-	CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);
-	CvSeq* tinyRedCountours;
-	IplImage* localImgGrayScale;
+    CvMemStorage* tinyRedFilterStorage = cvCreateMemStorage(0);
+    CvSeq* tinyRedCountours;
+    IplImage* localImgGrayScale;
 
-	// TODO: capire se è possibile evitare di continuare ad usare questa conversione da Mat a IplImage (https://stackoverflow.com/questions/5192578/opencv-iplimage)
-	IplImage tmp6=image_masked_red;
-	IplImage* img6 = &tmp6;
-	Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
-	mask(Rect(0, 0, image_width, image_height)) = 255;
-	IplImage mask_ipl=mask;
-	IplImage* mask_ipl2 = &mask_ipl;
+    IplImage tmp6=image_masked_red;
+    IplImage* img6 = &tmp6;
+    Mat mask = Mat::zeros(image_height, image_width, CV_8U); // All pixel set to 0
+    mask(Rect(0, 0, image_width, image_height)) = 255;
+    IplImage mask_ipl=mask;
+    IplImage* mask_ipl2 = &mask_ipl;
 
-	localImgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1);
-	// Conversione da scala HSV a scala di grigi dell'immagine
-	cvCvtColor(img6,localImgGrayScale,CV_BGR2GRAY);
-	cvFindContours(localImgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
+    localImgGrayScale = cvCreateImage(cvGetSize(img6), 8, 1);
+    //image conversion from HSV to greyScale
+    cvCvtColor(img6,localImgGrayScale,CV_BGR2GRAY);
+    cvFindContours(localImgGrayScale, tinyRedFilterStorage, &tinyRedCountours, sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, cvPoint(0,0));
 
-	while(tinyRedCountours) {
-		if(cvContourArea(tinyRedCountours) < 3)
-			cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
-		tinyRedCountours = tinyRedCountours->h_next;
-	}
+    while(tinyRedCountours) {
+        if(cvContourArea(tinyRedCountours) < 3)
+            cvDrawContours(mask_ipl2, tinyRedCountours, cvScalar(0,0,0), cvScalar(0,0,0), 100, 1);
+        tinyRedCountours = tinyRedCountours->h_next;
+    }
 
-	Mat image_without_red_areas;
-	image_masked_red.copyTo(image_without_red_areas,mask);
+    Mat image_without_red_areas;
+    image_masked_red.copyTo(image_without_red_areas,mask);
 
-	cvReleaseImage(&localImgGrayScale);
-	free(tinyRedCountours);
-	cvClearMemStorage(tinyRedFilterStorage);
-	cvReleaseMemStorage(&tinyRedFilterStorage);
+    cvReleaseImage(&localImgGrayScale);
+    free(tinyRedCountours);
+    cvClearMemStorage(tinyRedFilterStorage);
+    cvReleaseMemStorage(&tinyRedFilterStorage);
 
-	return image_without_red_areas;
+    return image_without_red_areas;
 }
 
 void ArrowFinder::Erosion(Mat in, Mat &out) {
-	int erosion_type = 0;
+    int erosion_type = 0;
 
-	if( erosion_elem == 0 )
-		erosion_type = MORPH_RECT;
-	else if(erosion_elem == 1)
-		erosion_type = MORPH_CROSS;
-	else if(erosion_elem == 2)
-		erosion_type = MORPH_ELLIPSE;
+    if( erosion_elem == 0 )
+        erosion_type = MORPH_RECT;
+    else if(erosion_elem == 1)
+        erosion_type = MORPH_CROSS;
+    else if(erosion_elem == 2)
+        erosion_type = MORPH_ELLIPSE;
 
-	Mat element = getStructuringElement(erosion_type,
-				Size(2*erosion_size + 1, 2*erosion_size+1),
-				Point(erosion_size, erosion_size));
-				erode(in, out, element);
+    Mat element = getStructuringElement(erosion_type,
+                Size(2*erosion_size + 1, 2*erosion_size+1),
+                Point(erosion_size, erosion_size));
+                erode(in, out, element);
     //imshow( "Erosion Demo", out );
 }
 
 void ArrowFinder::Dilation(Mat in, Mat &out) {
-	int dilation_type = 0;
+    int dilation_type = 0;
 
-	if( dilation_elem == 0 )
-		dilation_type = MORPH_RECT;
-	else if(dilation_elem == 1)
-		dilation_type = MORPH_CROSS;
-	else if(dilation_elem == 2)
-		dilation_type = MORPH_ELLIPSE;
+    if( dilation_elem == 0 )
+        dilation_type = MORPH_RECT;
+    else if(dilation_elem == 1)
+        dilation_type = MORPH_CROSS;
+    else if(dilation_elem == 2)
+        dilation_type = MORPH_ELLIPSE;
 
-	Mat element = getStructuringElement(dilation_type,
-				Size(2*dilation_size + 1, 2*dilation_size+1),
-				Point(dilation_size, dilation_size));
-				dilate(in, out, element);
-	//imshow( "Dilation Demo", out);
+    Mat element = getStructuringElement(dilation_type,
+                Size(2*dilation_size + 1, 2*dilation_size+1),
+                Point(dilation_size, dilation_size));
+                dilate(in, out, element);
+    //imshow( "Dilation Demo", out);
 }
-
-
-
-//TODO: remove
-/*
-void ArrowFinder::setImage(cv::Mat image, int image_height, int image_width) {
-
-image_width = image_width;
-image_heigth = image_height;
-
-//filtro sulla freccia di area maggiore
-if(arrows.size() != 0) {
-list<arrow_info>::const_iterator f = arrows.begin();
-arrow_info max = *f;
-for (f; f != arrows.end(); ++f) {
-if(max.area < (*f).area)
-max = *f;
-//cout<<"Freccia trovata"<<endl;
-}
-
-//calcolo punto medio tra il centro del rettangolo e il centro del triangolo
-max.centro_rettangolo.x = (max.centro_rettangolo.x + max.centro_triangolo.x) / 2;
-max.centro_rettangolo.y = (max.centro_rettangolo.y + max.centro_triangolo.y) / 2;
-
-
-cvCircle(img3, max.centro_rettangolo, 5, cvScalar(0,255,0),5);
-float angular_coeff = -(float)(max.centro_rettangolo.y-max.centro_triangolo.y)/(float)((max.centro_rettangolo.x-max.centro_triangolo.x)+0.0000001);
-
-float angle_deg;
-if(angular_coeff>0) {
-angle_deg = atan(angular_coeff)*180/M_PI;
-if((max.centro_rettangolo.y-max.centro_triangolo.y)<=0) {
-angle_deg = atan(angular_coeff)*180/M_PI + 180;
-}
-} else {
-angle_deg = atan(angular_coeff)*180/M_PI + 180;
-if((max.centro_rettangolo.y-max.centro_triangolo.y)<=0) {
-angle_deg = atan(angular_coeff)*180/M_PI;
-}
-}
-cout << "Centro rettangolo --> <x =" << max.centro_rettangolo.x << "; y = "<< max.centro_rettangolo.y <<">" <<endl;
-cout<<"m= "<<angular_coeff<<" tangente: "<<angle_deg<<endl;
-U_cam << max.centro_rettangolo.x,max.centro_rettangolo.y;
-
-// ==== ALGORITMO RICONOSIMENTO DISTANZA ====
-X_camera_normalized << (U_cam[0]-c_x)/f_x ,(U_cam[1]-c_y)/f_y ,1;
-scale = h_cam/(0.82*X_camera_normalized[1] + 0.57);
-X_camera = X_camera_normalized * scale;
-X_camera_augmented << X_camera , 1;
-X_World = (R_rot_camera * R_rot_cam_inclination * R_traslation).inverse() * X_camera_augmented;
-
-cout<<"Coordinate World: \n*****\n"<<X_World<<"\n*****\n";
-
-
-}
-
-//show the image in which identified shapes are marked
-cvNamedWindow("Tracked");
-cvShowImage("Tracked",output);
-
-// Immagine acquisita da camera in rgb8
-imshow("Immagine acquisita",image);
-cv::waitKey(30);
-
-
-cvReleaseImage(&imgGrayScale);
-free(contour);
-cvClearMemStorage(storage);
-cvReleaseMemStorage(&storage);
-
-
-/*CvSeq *j = result;
-while(j){
-cvClearMemStorage(j->storage);
-//cvReleaseMemStorage(&(j->storage));
-j = j->h_next;
-}
-
-//free(result);
-}*/

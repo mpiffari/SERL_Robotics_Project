@@ -69,7 +69,7 @@
 #define lower_dst_rect_triang   50 //[pixel] Lower threshold used to recognize when a square and a triangular makes an arrow
 
 //Erosion and dilation tuning parameters
-#define max_elem 		2
+#define max_elem        2
 #define max_kernel_size 21
 
 
@@ -78,110 +78,105 @@ using namespace std;
 using namespace cv;
 
 struct arrow_info {
-	CvPoint center;  	// Computed center of the arrow
-	float orientation;	// Orientation in degrees
-	float area;
+    CvPoint center;     // Computed center of the arrow
+    float orientation;  // Orientation in degrees
+    float area;
 };
 
 struct composed_arrow_info {
     CvPoint center_triangle;
     CvPoint center_rectangle;
-	float area;
+    float area;
 };
 
 class ArrowFinder {
-	private:
-		// Images
-		IplImage img2;
-		IplImage* img3;
-		// Red mask CSV threshold
-		int MinH_R = 0;
-		int MaxH_R = 10;
-		int MinS_R = 70;
-		int MaxS_R = 255;
-		int MinV_R = 172;
-		int MaxV_R = 255;
+    private:
+        // Images
+        IplImage img2;
+        IplImage* img3;
+        
+        // Red mask CSV threshold
+        int MinH_R = 0;
+        int MaxH_R = 10;
+        int MinS_R = 70;
+        int MaxS_R = 255;
+        int MinV_R = 172;
+        int MaxV_R = 255;
 
-		// Blue mask CSV threshold
-		int MinH_B = 100;
-		int MaxH_B = 180;
-		int MinS_B = 0;
-		int MaxS_B = 255;
-		int MinV_B = 65;
-		int MaxV_B = 200;
+        // Blue mask CSV threshold
+        int MinH_B = 100;
+        int MaxH_B = 180;
+        int MinS_B = 0;
+        int MaxS_B = 255;
+        int MinV_B = 65;
+        int MaxV_B = 200;
 
-		//Erosion and dilation parameters definition
-		int erosion_elem = 0;
-		int dilation_elem = 0;
-		int erosion_size = 1; //Setting of erosion type MORPH_RECT
-		int dilation_size = 3;	//Setting of dilation type MORPH_RECT
+        //Erosion and dilation parameters definition
+        int erosion_elem = 0;
+        int dilation_elem = 0;
+        int erosion_size = 1; 	//Setting of erosion type MORPH_RECT
+        int dilation_size = 3;	//Setting of dilation type MORPH_RECT
 
-		MatrixXf R_traslation = MatrixXf(4,4); 	//Traslation of point acquired from ground position to camera height (see documentation)
-		MatrixXf R_rot_theta = MatrixXf(4,4);		//Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
-		MatrixXf R_rot_camera = MatrixXf(4,4);		//Rotation from the frame of the camera to the base ground (see documentation)
-		VectorXf U_cam = VectorXf(2); 				//Coordinates of the point in the image frame
-		VectorXf X_camera_normalized = VectorXf(3);//Coordinates of the point in the normalized frame
-		VectorXf X_camera = VectorXf(3); 			//Coordinates of the point in the camera frame
-		VectorXf X_camera_augmented = VectorXf(4); //Useful for passage from 2D to 3D by adding "fictitious" third coordinate
-		VectorXf X_World = VectorXf(4);
+        MatrixXf R_traslation = MatrixXf(4,4);  		//Traslation of point acquired from ground position to camera height (see documentation)
+        MatrixXf R_rot_cam_inclination = MatrixXf(4,4);	//Rotation of the point acquired of an angle equals to "cam_inclination" (see documentation)
+        MatrixXf R_rot_camera = MatrixXf(4,4);      	//Rotation from the frame of the camera to the base ground (see documentation)
+        VectorXf U_cam = VectorXf(2);               	//Coordinates of the point in the image frame
+        VectorXf X_camera_normalized = VectorXf(3);		//Coordinates of the point in the normalized frame
+        VectorXf X_camera = VectorXf(3);            	//Coordinates of the point in the camera frame
+        VectorXf X_camera_augmented = VectorXf(4); 		//Useful for passage from 2D to 3D by adding "fictitious" third coordinate
+        VectorXf X_World = VectorXf(4);
 
-		const char* nameMainImageWindow	  = "Field Of View";
-		const char* erosionImageWindow 	  = "Erosion demo";
-		const char* dilatationImageWindow = "Dilatation demo";
+        const char* nameMainImageWindow   = "Field Of View";
+        const char* erosionImageWindow    = "Erosion demo";
+        const char* dilatationImageWindow = "Dilatation demo";
 
-		bool showColorsThresholdTrackbar = false; //Flag to activate trackbar window for HSV threshold tuning
-		bool showErosionTrackbar 		 = false; //Flag to activate trackbar window for erosion tuning
-		bool showDilatationTrackbar 	 = false; //Flag to activate trackbar window for dilatation tuning
+        bool showColorsThresholdTrackbar = false; //Flag to activate trackbar window for HSV threshold tuning
+        bool showErosionTrackbar         = false; //Flag to activate trackbar window for erosion tuning
+        bool showDilatationTrackbar      = false; //Flag to activate trackbar window for dilatation tuning
 
-		// Camera tilt
-		float cam_inclination = asin(2/3.5);
-		// Intrinsic parameters of the camera (focal and center position)
-		float f_x = 463.713374;
-		float f_y = 464.444408;
-		float c_x = 316.855629;
-		float c_y = 255.988008;
-		float h_cam = 0.310; // Height of the camera from the ground expressed in [m]
-		float scale; // Scale factor used to detect deepness of the point
-		//Image dimensions
-		int image_height;
-		int image_width;
+        // Camera tilt
+        float cam_inclination;
 
-	public:
-	    std::vector<cv::Point2f> output;	// Marker coordinates
-	    ArrowFinder(int height = 640, int width = 480);
-	    ~ArrowFinder();
+        // Intrinsic parameters of the camera (focal and center position)
+        float f_x;
+        float f_y;
+        float c_x;
+        float c_y;
+        float h_cam; // Height of the camera from the ground expressed in [m]
+        float scale; // Scale factor used to detect deepness of the point
 
-	   // bool setup(const std::string &filename);
+        //Image dimensions
+        int image_height;
+        int image_width;
 
-	    /*
-	    	return: true if we find an image
-	    */
-	    void setImage(cv::Mat original_image, int image_height, int image_width);
+    public:
+        ArrowFinder(float cam_inclination=0, float cam_height=0);
+        ~ArrowFinder();
 
-		/*
-		*	@return: a list containing all the arrows found into original_image
-		*/
-	    list<arrow_info> findArrows(cv::Mat image);
+        /*
+        *   @return: a list containing all the arrows found into original_image
+        */
+        list<arrow_info> findArrows(cv::Mat image);
 
-	    /*
-	    * @return: the biggest arrow in the arrow_list
-	    */
-	    const arrow_info* getBiggestArrow( list<arrow_info> arrow_list);
+        /*
+        * @return: the biggest arrow in the arrow_list
+        */
+        const arrow_info* getBiggestArrow( list<arrow_info> arrow_list);
 
-	    // Convert from image coordiantes to world coordinates
-	    VectorXf worldCoordinates(const arrow_info* arrow);
+        /*
+        * @return: the world coordiantes from image coordinates
+        */
+        VectorXf worldCoordinates(const arrow_info* arrow);
 
+        // Setup parameters
+        void setCameraIntrinsicParameters(float f_x, float f_y, float c_x, float c_y);
+        void setCameraPhysicalParameters(float cam_inclination, float cam_height);
 
-	    //TODO: result of computation will be pubblished with ROS throw a topic
-	    //or keep indipendent from ROS
-
-	private:
-		/*
-		*	Filter of tiny contour in image with red pixel
-		*/
-		Mat tinyRedFiltering(Mat &image_masked_red);
-		void Erosion(Mat in, Mat &out);
-		void Dilation(Mat in, Mat &out);
+    private:
+        //Filter of tiny contour in image with red pixel
+        Mat tinyRedFiltering(Mat &image_masked_red);
+        void Erosion(Mat in, Mat &out);
+        void Dilation(Mat in, Mat &out);
 };
 
 #endif
