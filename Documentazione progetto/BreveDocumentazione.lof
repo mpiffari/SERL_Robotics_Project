@@ -1,4 +1,4 @@
-\babel@toc {english}{}
+\select@language {english}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {1.1}{\ignorespaces Struttura del codice\relax }}{2}{figure.caption.3}
 \contentsline {figure}{\numberline {1.2}{\ignorespaces Base robotica addetta alla movimentazione\relax }}{3}{figure.caption.4}
@@ -23,7 +23,8 @@
 \contentsline {figure}{\numberline {6.1}{\ignorespaces Frames scelti\relax }}{20}{figure.caption.18}
 \contentsline {figure}{\numberline {6.2}{\ignorespaces Frame della camera\relax }}{21}{figure.caption.19}
 \contentsline {figure}{\numberline {6.3}{\ignorespaces Visione d'insieme dei frames scelti all'interno dell'area di lavoro\relax }}{22}{figure.caption.20}
+\contentsline {figure}{\numberline {6.4}{\ignorespaces rototraslazione del sistema di riferimento della freccia; l'angolo $\Theta $rappresenta la rotazione rispetto al sistema U'V'W' ed \IeC {\`e} l'inclinazione calcolata precedentemente.\relax }}{23}{figure.caption.21}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {7.1}{\ignorespaces Esempio esplicativo del risultato finale dell'algoritmo\relax }}{23}{figure.caption.21}
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Esempio esplicativo del risultato finale dell'algoritmo\relax }}{25}{figure.caption.22}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
