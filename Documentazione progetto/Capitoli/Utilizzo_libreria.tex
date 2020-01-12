@@ -1,15 +1,19 @@
 Andiamo qui a riassumere alcuni passi operativi che sono stati realizzati durante lo sviluppo ed il proseguimento del progetto.
 
 \section{Installazione driver camera}
-TODO - download e installazione driver
-
-Nel caso in cui la camera sembri non funzionare, come specificato nel capitolo ~\ref{section:deamonCameraUeye}, è necessario avviare il daemon della camera.
-Questo è possibile solo se esso non è gia stato attivato come nel caso, per esempio, di un plug-in a caldo.
-Il comando da runnare da terminale, in qualsiasi \textit{posizione}, è il seguente:
+Per scaricare i driver della camera è necessario registrarsi al sito https://en.ids-imaging.com, una volta scaricati i driver si procede all'installazione eseguendo il seguente:
 \begin{lstlisting}
-	- sudo /etc/init.d/ueyeusbdrc start 
-	(il comando iniziale permetteva di scegliere tra usb e eth: la nostra camera e usb)!
+	sudo sh ./ueyesdk-setup*.run
 \end{lstlisting}
+Dopo l'installazione, a meno di un riavvio, è necessario avviare il demone della camera:
+\begin{lstlisting}
+	sudo /etc/init.d/ueyeusbdrc start 
+\end{lstlisting}
+Come specificato nel capitolo ~\ref{section:deamonCameraUeye}, il demone ueyeusbdrc deve essere sempre attivo, potrebbe non esserlo nel caso di un plug-in a caldo (nel caso la camera fosse connessa tramite porta ethernet si deve usare il demone ueyeehtdrc).
+
+
+
+
 
 \section{Avvio del codice}
 Nella nostra esperienza ci è stato molto comodo andare ad utilizzare non il classico terminale messo a disposizione da Ubuntu, ma bensì ci siamo appoggiati all'utilizzo di \textit{terminator}, il quale permette una migliore gestione di terminali multipli.
